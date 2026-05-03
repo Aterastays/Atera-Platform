@@ -3,20 +3,30 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Atera IT management platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: customers
+    description: Customer/client management
+  - name: devices
+    description: Device/agent management
+  - name: alerts
+    description: Alert monitoring
+  - name: tickets
+    description: Helpdesk tickets
+  - name: dashboard
+    description: Dashboard summaries
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +34,448 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # --- Customers ---
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List all customers
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Create a customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerBody"
+      responses:
+        "201":
+          description: Created customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    put:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Update a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerBody"
+      responses:
+        "200":
+          description: Updated customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    delete:
+      operationId: deleteCustomer
+      tags: [customers]
+      summary: Delete a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Devices ---
+  /devices:
+    get:
+      operationId: listDevices
+      tags: [devices]
+      summary: List all devices
+      parameters:
+        - name: customerId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [online, offline, warning]
+      responses:
+        "200":
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Device"
+    post:
+      operationId: createDevice
+      tags: [devices]
+      summary: Register a device
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeviceBody"
+      responses:
+        "201":
+          description: Created device
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+
+  /devices/{id}:
+    get:
+      operationId: getDevice
+      tags: [devices]
+      summary: Get a device
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Device details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+    put:
+      operationId: updateDevice
+      tags: [devices]
+      summary: Update a device
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeviceBody"
+      responses:
+        "200":
+          description: Updated device
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Device"
+    delete:
+      operationId: deleteDevice
+      tags: [devices]
+      summary: Delete a device
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Alerts ---
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags: [alerts]
+      summary: List alerts
+      parameters:
+        - name: deviceId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: severity
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [critical, warning, info]
+        - name: resolved
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+    post:
+      operationId: createAlert
+      tags: [alerts]
+      summary: Create an alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAlertBody"
+      responses:
+        "201":
+          description: Created alert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+
+  /alerts/{id}:
+    get:
+      operationId: getAlert
+      tags: [alerts]
+      summary: Get an alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Alert details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+    put:
+      operationId: updateAlert
+      tags: [alerts]
+      summary: Update alert (e.g., resolve)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAlertBody"
+      responses:
+        "200":
+          description: Updated alert
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Alert"
+
+  # --- Tickets ---
+  /tickets:
+    get:
+      operationId: listTickets
+      tags: [tickets]
+      summary: List tickets
+      parameters:
+        - name: customerId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [open, in_progress, resolved, closed]
+        - name: priority
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+      responses:
+        "200":
+          description: List of tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+    post:
+      operationId: createTicket
+      tags: [tickets]
+      summary: Create a ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTicketBody"
+      responses:
+        "201":
+          description: Created ticket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+
+  /tickets/{id}:
+    get:
+      operationId: getTicket
+      tags: [tickets]
+      summary: Get a ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Ticket details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+    put:
+      operationId: updateTicket
+      tags: [tickets]
+      summary: Update a ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTicketBody"
+      responses:
+        "200":
+          description: Updated ticket
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+    delete:
+      operationId: deleteTicket
+      tags: [tickets]
+      summary: Delete a ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # --- Dashboard (wow endpoints) ---
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get overview summary counts and stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/recent-alerts:
+    get:
+      operationId: getRecentAlerts
+      tags: [dashboard]
+      summary: Get most recent unresolved alerts
+      responses:
+        "200":
+          description: Recent alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+
+  /dashboard/device-health:
+    get:
+      operationId: getDeviceHealth
+      tags: [dashboard]
+      summary: Get breakdown of device health by status
+      responses:
+        "200":
+          description: Device health breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceHealthBreakdown"
+
+  /dashboard/ticket-stats:
+    get:
+      operationId: getTicketStats
+      tags: [dashboard]
+      summary: Get ticket counts by status and priority
+      responses:
+        "200":
+          description: Ticket statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketStats"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +483,303 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        industry:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        deviceCount:
+          type: integer
+        openTickets:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, name, email, status, deviceCount, openTickets, createdAt]
+
+    CreateCustomerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        industry:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+      required: [name, email, status]
+
+    Device:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerId:
+          type: integer
+        customerName:
+          type: string
+        hostname:
+          type: string
+        type:
+          type: string
+          enum: [workstation, server, network_device, mobile]
+        os:
+          type: string
+        osVersion:
+          type: string
+        status:
+          type: string
+          enum: [online, offline, warning]
+        cpuUsage:
+          type: number
+        memoryUsage:
+          type: number
+        diskUsage:
+          type: number
+        lastSeen:
+          type: string
+          format: date-time
+        ipAddress:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, customerId, hostname, type, os, status, lastSeen, createdAt]
+
+    CreateDeviceBody:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        hostname:
+          type: string
+        type:
+          type: string
+          enum: [workstation, server, network_device, mobile]
+        os:
+          type: string
+        osVersion:
+          type: string
+        status:
+          type: string
+          enum: [online, offline, warning]
+        ipAddress:
+          type: string
+      required: [customerId, hostname, type, os, status]
+
+    Alert:
+      type: object
+      properties:
+        id:
+          type: integer
+        deviceId:
+          type: integer
+        deviceHostname:
+          type: string
+        customerId:
+          type: integer
+        customerName:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [critical, warning, info]
+        category:
+          type: string
+          enum: [cpu, memory, disk, network, security, hardware, other]
+        resolved:
+          type: boolean
+        resolvedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, deviceId, title, severity, category, resolved, createdAt]
+
+    CreateAlertBody:
+      type: object
+      properties:
+        deviceId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [critical, warning, info]
+        category:
+          type: string
+          enum: [cpu, memory, disk, network, security, hardware, other]
+      required: [deviceId, title, severity, category]
+
+    UpdateAlertBody:
+      type: object
+      properties:
+        resolved:
+          type: boolean
+        title:
+          type: string
+        description:
+          type: string
+
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerId:
+          type: integer
+        customerName:
+          type: string
+        deviceId:
+          type: integer
+          nullable: true
+        deviceHostname:
+          type: string
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, customerId, title, description, status, priority, createdAt, updatedAt]
+
+    CreateTicketBody:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        deviceId:
+          type: integer
+          nullable: true
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: string
+          nullable: true
+      required: [customerId, title, description, status, priority]
+
+    UpdateTicketBody:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [open, in_progress, resolved, closed]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: string
+          nullable: true
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalCustomers:
+          type: integer
+        totalDevices:
+          type: integer
+        onlineDevices:
+          type: integer
+        offlineDevices:
+          type: integer
+        warningDevices:
+          type: integer
+        openAlerts:
+          type: integer
+        criticalAlerts:
+          type: integer
+        openTickets:
+          type: integer
+        resolvedTicketsToday:
+          type: integer
+      required: [totalCustomers, totalDevices, onlineDevices, offlineDevices, warningDevices, openAlerts, criticalAlerts, openTickets, resolvedTicketsToday]
+
+    DeviceHealthBreakdown:
+      type: object
+      properties:
+        online:
+          type: integer
+        offline:
+          type: integer
+        warning:
+          type: integer
+      required: [online, offline, warning]
+
+    TicketStats:
+      type: object
+      properties:
+        byStatus:
+          type: object
+          properties:
+            open:
+              type: integer
+            in_progress:
+              type: integer
+            resolved:
+              type: integer
+            closed:
+              type: integer
+          required: [open, in_progress, resolved, closed]
+        byPriority:
+          type: object
+          properties:
+            low:
+              type: integer
+            medium:
+              type: integer
+            high:
+              type: integer
+            critical:
+              type: integer
+          required: [low, medium, high, critical]
+      required: [byStatus, byPriority]
