@@ -69,7 +69,9 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: L
       current_rent: serviceType === "stays" ? parseFloat(formData.currentRent) || undefined : undefined,
       tenanted: serviceType === "stays" ? formData.tenanted === "Yes" : undefined,
       available_from: serviceType === "stays" ? formData.availableFrom : undefined,
-      notes: serviceType === "stays" ? formData.notes : `Situation: ${formData.currentSituation}\nGoals: ${formData.goals}`
+      message: serviceType === "stays" ? formData.notes : undefined,
+      current_situation: serviceType === "management" ? formData.currentSituation : undefined,
+      goals: serviceType === "management" ? formData.goals : undefined
     };
 
     try {

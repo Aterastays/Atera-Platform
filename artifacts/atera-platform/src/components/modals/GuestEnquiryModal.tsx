@@ -83,7 +83,7 @@ export function GuestEnquiryModal({ open, onClose }: GuestEnquiryModalProps) {
           check_in: formData.checkIn,
           check_out: formData.checkOut,
           guests: formData.guests,
-          stay_type: formData.stayType,
+          type_of_stay: formData.stayType,
           message: formData.message
         })
       });
