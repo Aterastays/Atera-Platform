@@ -13,19 +13,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-async function ensureAdmin(userId: string | undefined): Promise<boolean> {
+async function checkAdminStatus(userId: string | undefined): Promise<boolean> {
   if (!userId) return false;
-  // Any successfully authenticated Supabase user gets hub access.
-  // We upsert into hub_admins so the table still acts as an audit log.
-  const { error } = await supabase
+  // Read-only check: the hub_admins self-read RLS policy allows each user
+  // to see their own row. Only explicitly listed admins will get a result.
+  // Fail closed on any error so non-admins are never accidentally let in.
+  const { data, error } = await supabase
     .from("hub_admins")
-    .upsert({ user_id: userId }, { onConflict: "user_id" });
-  // If the upsert fails (e.g. table doesn't exist yet), still allow access
-  // so the user isn't permanently locked out during setup.
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
   if (error) {
-    console.warn("hub_admins upsert failed, granting access anyway:", error.message);
+    console.warn("hub_admins check failed:", error.message);
+    return false;
   }
-  return true;
+  return data !== null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -39,14 +41,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentSession = data.session;
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      setIsAdmin(await ensureAdmin(currentSession?.user?.id));
+      setIsAdmin(await checkAdminStatus(currentSession?.user?.id));
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setIsAdmin(await ensureAdmin(session?.user?.id));
+      setIsAdmin(await checkAdminStatus(session?.user?.id));
     });
 
     return () => subscription.unsubscribe();
