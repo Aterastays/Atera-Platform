@@ -19,6 +19,7 @@ export function HubLogin() {
       setError(error);
       setIsLoading(false);
     } else {
+      setIsLoading(false);
       setLocation("/hub/dashboard");
     }
   };
