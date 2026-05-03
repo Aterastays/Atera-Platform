@@ -32,7 +32,7 @@ function App() {
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />
             <Route path="/hub/login" component={HubLogin} />
-            <Route path="/hub/:rest*">
+            <Route path="/hub*">
               <HubLayout>
                 <Switch>
                   <Route path="/hub/dashboard" component={HubDashboard} />

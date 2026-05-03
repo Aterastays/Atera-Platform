@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/useAuth";
 import { useLocation } from "wouter";
 import { Sidebar } from "./Sidebar";
@@ -13,17 +13,18 @@ export function HubLayout({ children }: HubLayoutProps) {
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    if (!loading && !user) {
+      setLocation("/hub/login");
+    }
+  }, [loading, user, setLocation]);
+
+  if (loading || !user) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
       </div>
     );
-  }
-
-  if (!user) {
-    setLocation("/hub/login");
-    return null;
   }
 
   if (!isAdmin) {
