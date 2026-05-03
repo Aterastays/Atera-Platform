@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  adminLoading: boolean;
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [adminLoading, setAdminLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -41,14 +43,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentSession = data.session;
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      setAdminLoading(true);
       setIsAdmin(await checkAdminStatus(currentSession?.user?.id));
+      setAdminLoading(false);
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setAdminLoading(true);
       setIsAdmin(await checkAdminStatus(session?.user?.id));
+      setAdminLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -79,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, adminLoading, isAdmin, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

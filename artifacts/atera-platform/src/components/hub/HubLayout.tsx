@@ -9,17 +9,17 @@ interface HubLayoutProps {
 }
 
 export function HubLayout({ children }: HubLayoutProps) {
-  const { user, isAdmin, loading, signOut } = useAuth();
+  const { user, isAdmin, loading, adminLoading, signOut } = useAuth();
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !adminLoading && !user) {
       setLocation("/hub/login");
     }
-  }, [loading, user, setLocation]);
+  }, [loading, adminLoading, user, setLocation]);
 
-  if (loading || !user) {
+  if (loading || adminLoading || !user) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
