@@ -242,7 +242,11 @@ router.post("/enquiry", limiter, async (req, res) => {
 
     const safeData = validation.data;
 
-    const { error: dbError } = await supabase.from("enquiries").insert([safeData]);
+    const insertData = Object.fromEntries(
+      Object.entries(safeData).filter(([, v]) => v !== undefined && v !== null)
+    );
+
+    const { error: dbError } = await supabase.from("enquiries").insert([insertData]);
     if (dbError) {
       req.log.error({ dbError }, "Supabase insert failed");
       res.status(500).json({ error: "Failed to save enquiry. Please try again." });
