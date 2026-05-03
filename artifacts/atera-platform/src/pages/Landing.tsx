@@ -1,12 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { ServicesSection } from "@/components/landing/ServicesSection";
-import { PropertiesSection } from "@/components/landing/PropertiesSection";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { ManagementPitch } from "@/components/landing/ManagementPitch";
-import { Testimonials } from "@/components/landing/Testimonials";
 import { CTAStrip } from "@/components/landing/CTAStrip";
 import { Footer } from "@/components/landing/Footer";
 import { GuestEnquiryModal } from "@/components/modals/GuestEnquiryModal";
@@ -22,42 +19,55 @@ export function Landing() {
     setLandlordModalOpen(true);
   };
 
+  useEffect(() => {
+    const els = document.querySelectorAll(".reveal");
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("revealed");
+            io.unobserve(e.target);
+          }
+        }),
+      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-black">
-      <Navbar 
-        onBookStay={() => setGuestModalOpen(true)} 
-        onLandlord={() => handleLandlordClick()} 
+    <div className="min-h-screen bg-black font-['Inter',sans-serif] selection:bg-white selection:text-black overflow-x-hidden">
+      <Navbar
+        onBookStay={() => setGuestModalOpen(true)}
+        onLandlord={() => handleLandlordClick()}
       />
-      
+
       <main>
-        <Hero 
-          onBookStay={() => setGuestModalOpen(true)} 
-          onLandlord={() => handleLandlordClick()} 
+        <Hero
+          onBookStay={() => setGuestModalOpen(true)}
+          onLandlord={() => handleLandlordClick()}
         />
         <TrustBar />
-        <ServicesSection 
-          onStays={() => handleLandlordClick("stays")} 
-          onManagement={() => handleLandlordClick("management")} 
+        <ServicesSection
+          onLandlord={() => handleLandlordClick("stays")}
+          onBookStay={() => setGuestModalOpen(true)}
         />
-        <PropertiesSection onBookStay={() => setGuestModalOpen(true)} />
         <HowItWorks />
-        <ManagementPitch onManagement={() => handleLandlordClick("management")} />
-        <Testimonials />
-        <CTAStrip 
-          onBookStay={() => setGuestModalOpen(true)} 
-          onLandlord={() => handleLandlordClick()} 
+        <CTAStrip
+          onBookStay={() => setGuestModalOpen(true)}
+          onLandlord={() => handleLandlordClick()}
         />
       </main>
 
       <Footer />
 
-      <GuestEnquiryModal 
-        open={guestModalOpen} 
-        onClose={() => setGuestModalOpen(false)} 
+      <GuestEnquiryModal
+        open={guestModalOpen}
+        onClose={() => setGuestModalOpen(false)}
       />
-      <LandlordEnquiryModal 
-        open={landlordModalOpen} 
-        onClose={() => setLandlordModalOpen(false)} 
+      <LandlordEnquiryModal
+        open={landlordModalOpen}
+        onClose={() => setLandlordModalOpen(false)}
         initialService={landlordInitialService}
       />
     </div>

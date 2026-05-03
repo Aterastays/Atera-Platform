@@ -1,74 +1,74 @@
-import { Home, FileText } from "lucide-react";
-
 interface ServicesProps {
-  onStays: () => void;
-  onManagement: () => void;
+  onLandlord: () => void;
+  onBookStay: () => void;
 }
 
-export function ServicesSection({ onStays, onManagement }: ServicesProps) {
+export function ServicesSection({ onLandlord, onBookStay }: ServicesProps) {
   return (
-    <section id="services" className="section-surface relative">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col items-center text-center mb-16 reveal">
-          <div className="label-style text-gold mb-4">OUR SERVICES</div>
-          <h1 className="font-display text-4xl md:text-5xl text-off-white mb-6">Two Ways We Work</h1>
-          <div className="gold-rule"></div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6 reveal" style={{ transitionDelay: '200ms' }}>
-          {/* Card 1: Stays Partnership */}
-          <div className="bg-[#080709] border border-[rgba(201,168,76,0.15)] p-6 md:p-12 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 group flex flex-col h-full">
-            <Home className="w-8 h-8 text-gold mb-6 group-hover:scale-110 transition-transform" />
-            <h2 className="font-display text-3xl text-off-white mb-4">Stays Partnership</h2>
-            <p className="font-body text-[#8C8880] mb-8 font-light leading-relaxed flex-grow">
-              We become your company tenant. You receive guaranteed rent on the same day every month, while we handle all management, minor maintenance, and guest communication.
+    <>
+      {/* ── Landlord ─── */}
+      <section id="landlords" className="bg-[#f5f5f7] text-black py-32 overflow-hidden">
+        <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row items-center gap-20">
+          <div className="reveal w-full md:w-[42%] flex flex-col items-start">
+            <span className="text-[11px] font-bold tracking-[0.14em] text-[#6e6e73] uppercase mb-5 px-3 py-1 border border-[#c7c7cc] rounded-[980px]">
+              For Landlords
+            </span>
+            <h2 className="text-[44px] font-bold tracking-[-0.03em] leading-[1.08] mb-6">
+              Total peace of mind.<br />Zero void periods.
+            </h2>
+            <p className="text-[17px] text-[#6e6e73] leading-[1.65] mb-8">
+              We become your company tenant, guaranteeing your rent for 3 to 5 years. No management fees, no void periods — your property maintained to show-home standard.
             </p>
-            <ul className="flex flex-col gap-3 mb-10">
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Guaranteed fixed monthly rent
-              </li>
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Zero void periods or arrears risk
-              </li>
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Minor maintenance covered by us
-              </li>
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Long-term agreements (3–5 years)
-              </li>
-            </ul>
-            <button className="btn-outline w-full justify-center" onClick={onStays} data-testid="btn-service-stays">
-              Enquire — Stays Partnership
+            <button
+              onClick={onLandlord}
+              className="text-[17px] text-[#0066cc] font-semibold flex items-center gap-1 group hover:gap-2 transition-all duration-200"
+              data-testid="btn-service-stays"
+            >
+              Get a free valuation
+              <span className="group-hover:translate-x-1 transition-transform duration-200 inline-block">→</span>
             </button>
           </div>
-
-          {/* Card 2: Property Management */}
-          <div className="bg-[#080709] border border-[rgba(201,168,76,0.15)] p-6 md:p-12 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 group flex flex-col h-full">
-            <FileText className="w-8 h-8 text-gold mb-6 group-hover:scale-110 transition-transform" />
-            <h2 className="font-display text-3xl text-off-white mb-4">Full Property Management</h2>
-            <p className="font-body text-[#8C8880] mb-8 font-light leading-relaxed flex-grow">
-              Traditional management elevated. We find high-quality professional tenants, handle all compliance, and maintain your asset to the highest standard.
-            </p>
-            <ul className="flex flex-col gap-3 mb-10">
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Comprehensive tenant referencing
-              </li>
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Full compliance & safety management
-              </li>
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Quarterly property inspections
-              </li>
-              <li className="flex items-start gap-3 text-off-white font-light text-[15px]">
-                <span className="text-gold font-bold">—</span> Transparent monthly reporting
-              </li>
-            </ul>
-            <button className="btn-outline w-full justify-center" onClick={onManagement} data-testid="btn-service-management">
-              Enquire — Property Management
-            </button>
+          <div className="reveal w-full md:w-[58%]" style={{ transitionDelay: "0.2s" }}>
+            <img
+              src="/landlord-exterior.png"
+              alt="Premium UK property"
+              className="w-full rounded-[20px]"
+            />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* ── Guests ─── */}
+      <section id="guests" className="bg-black text-white py-32 overflow-hidden border-t border-[#1d1d1f]">
+        <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-20">
+          <div className="reveal w-full md:w-[42%] flex flex-col items-start">
+            <span className="text-[11px] font-bold tracking-[0.14em] text-[#6e6e73] uppercase mb-5 px-3 py-1 border border-[#3a3a3c] rounded-[980px]">
+              For Corporate Guests
+            </span>
+            <h2 className="text-[44px] font-bold tracking-[-0.03em] leading-[1.08] mb-6">
+              A premium space to work, rest, and live.
+            </h2>
+            <p className="text-[17px] text-[#a1a1a6] leading-[1.65] mb-8">
+              Spacious, fully equipped serviced apartments designed for professionals. Fast Wi-Fi, dedicated workspaces, and 24/7 support — everything you need for a perfect stay.
+            </p>
+            <button
+              onClick={onBookStay}
+              className="text-[17px] text-[#2997ff] font-semibold flex items-center gap-1 group hover:gap-2 transition-all duration-200"
+              data-testid="btn-service-management"
+            >
+              Explore our locations
+              <span className="group-hover:translate-x-1 transition-transform duration-200 inline-block">→</span>
+            </button>
+          </div>
+          <div className="reveal w-full md:w-[58%]" style={{ transitionDelay: "0.2s" }}>
+            <img
+              src="/guest-office.png"
+              alt="Premium home office in serviced apartment"
+              className="w-full rounded-[20px]"
+            />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

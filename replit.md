@@ -36,12 +36,30 @@ Full-stack business platform for **ATERA INDUSTRIES LTD** (trading as Atera Stay
 
 ## Design System
 
-- **Gold**: `#C9A84C`
-- **Black**: `#080709`
-- **Near-black**: `#0D0C0F`
-- **Surface-dark**: `#131217`
-- **Fonts**: Cormorant Garamond (display) + Inter (body)
-- Logo SVG at `artifacts/atera-platform/public/atera-logo.svg` (placeholder — replace with real logo)
+### Landing Page (Apple-style, graduated from mockup)
+- **Background**: `#000000` / `#f5f5f7` (alternating dark/light sections)
+- **Text**: white / `#a1a1a6` / `#6e6e73` / `#c7c7cc`
+- **Fonts**: Inter (all weights)
+- **Buttons**: pill `rounded-[980px]` — white solid + glass/blur ghost
+- **Animations**: CSS `.hero-item`/`.hero-in` for hero, `.reveal`/`.revealed` IntersectionObserver for scroll sections
+- **Logo PNG**: `artifacts/atera-platform/public/atera-logo.png` (gold A/I monogram, black background)
+- **Hero image**: `artifacts/atera-platform/public/hero-apartment.png` (full-bleed)
+- **Landlord image**: `artifacts/atera-platform/public/landlord-exterior.png`
+- **Guest image**: `artifacts/atera-platform/public/guest-office.png`
+
+### Hub (dark operational, Apple-clean)
+- **Background**: `#0a0a0a` — all hub screens
+- **Borders**: `#1d1d1f`
+- **Sidebar active**: white left bar + white text + `#1d1d1f` bg
+- **Topbar**: `52px`, `bg-[#0a0a0a]/80 backdrop-blur-[20px]`
+- **Fonts**: Inter
+- **Legacy CSS vars** (`--gold`, `--off-white`, etc.) still available for shadcn components
+
+### Legacy CSS vars (keep for hub/shadcn compatibility)
+- **Gold**: `#C9A84C` / `--gold`
+- **Black**: `#080709` / `--black`
+- **Near-black**: `#0D0C0F` / `--near-black`
+- **Fonts**: Cormorant Garamond (`--font-display`) + Inter (`--font-body`)
 
 ## Database Schema (Supabase)
 
@@ -53,7 +71,7 @@ RLS policies:
 
 ## Public Routes
 
-- `/` — Landing page (Services, Properties, How It Works, Management sections)
+- `/` — Landing page (Hero → TrustBar → Landlord section → Guest section → How It Works → CTA → Footer)
 - `/privacy` — Privacy Policy
 - `/terms` — Terms of Service
 

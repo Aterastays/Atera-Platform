@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 interface HeroProps {
   onBookStay: () => void;
@@ -6,84 +6,75 @@ interface HeroProps {
 }
 
 export function Hero({ onBookStay, onLandlord }: HeroProps) {
-  const [loaded, setLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setLoaded(true);
+    const els = containerRef.current?.querySelectorAll("[data-hero]") ?? [];
+    els.forEach((el, i) => {
+      (el as HTMLElement).style.transitionDelay = `${i * 80}ms`;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          (el as HTMLElement).classList.add("hero-in");
+        });
+      });
+    });
   }, []);
 
   return (
-    <section className="relative min-h-[100dvh] bg-[#080709] flex flex-col items-center justify-center overflow-hidden grain-overlay">
-      <div className="absolute inset-0 z-0 pointer-events-none" style={{
-        background: "radial-gradient(ellipse at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%)"
-      }} />
+    <section className="relative h-screen min-h-[680px] bg-black overflow-hidden flex flex-col items-center justify-center">
+      <img
+        src="/hero-apartment.png"
+        alt="Luxury serviced apartment"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/55 to-black/45 pointer-events-none" />
 
-      <div className="absolute inset-8 z-0 pointer-events-none border border-transparent">
-        <div className="absolute top-0 left-0 w-5 h-5 border-t border-l border-[#C9A84C]" />
-        <div className="absolute top-0 right-0 w-5 h-5 border-t border-r border-[#C9A84C]" />
-        <div className="absolute bottom-0 left-0 w-5 h-5 border-b border-l border-[#C9A84C]" />
-        <div className="absolute bottom-0 right-0 w-5 h-5 border-b border-r border-[#C9A84C]" />
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
-        <div 
-          className={`label-style text-gold mb-8 transition-all duration-700 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-          style={{ transitionDelay: '100ms' }}
-          data-testid="hero-eyebrow"
+      <div ref={containerRef} className="relative z-10 flex flex-col items-center text-center px-6 w-full max-w-4xl">
+        <p
+          data-hero
+          className="hero-item text-[11px] font-semibold tracking-[0.18em] uppercase text-[#a1a1a6] mb-5"
         >
-          ATERA STAYS
-        </div>
-
-        <img 
-          src="/atera-logo.svg" 
-          height="80" 
-          alt="Atera Logo" 
-          className={`mb-8 transition-all duration-700 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-          style={{ transitionDelay: '200ms', height: 80 }}
-        />
-
-        <h1 
-          className={`font-display text-5xl md:text-[64px] leading-[1.1] mb-8 text-off-white transition-all duration-700 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-          style={{ transitionDelay: '300ms' }}
-        >
-          <span className="font-light">Premium Stays,</span><br/>
-          <span className="italic font-light">Proven Management.</span>
-        </h1>
-
-        <p 
-          className={`font-body font-light text-[#8C8880] text-lg max-w-[480px] mb-12 transition-all duration-700 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-          style={{ transitionDelay: '400ms' }}
-        >
-          Guaranteed rent for landlords. Exceptional corporate and contractor accommodation across England.
+          Atera Stays
         </p>
-
-        <div 
-          className={`flex flex-col sm:flex-row gap-4 w-full sm:w-auto transition-all duration-700 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-          style={{ transitionDelay: '500ms' }}
+        <h1
+          data-hero
+          className="hero-item text-[56px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.0] text-white"
         >
-          <button 
-            className="btn-gold justify-center py-4 px-8 text-[15px]" 
+          Premium Stays.
+        </h1>
+        <h1
+          data-hero
+          className="hero-item text-[56px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.0] text-white mb-7"
+        >
+          Proven Management.
+        </h1>
+        <p
+          data-hero
+          className="hero-item text-[16px] text-[#c7c7cc] max-w-md mx-auto font-normal leading-[1.7] mb-10"
+        >
+          Guaranteed rent for landlords.
+          <br />
+          Premium serviced accommodation for corporate guests.
+        </p>
+        <div data-hero className="hero-item flex flex-col sm:flex-row items-center gap-3">
+          <button
+            onClick={onLandlord}
+            className="bg-white text-black px-7 py-[12px] rounded-[980px] font-semibold text-[15px] hover:bg-[#e8e8ed] transition-colors duration-200 min-w-[188px]"
+            data-testid="btn-landlord"
+          >
+            Get a Free Valuation
+          </button>
+          <button
             onClick={onBookStay}
+            className="bg-white/10 backdrop-blur-sm text-white border border-white/25 px-7 py-[12px] rounded-[980px] font-semibold text-[15px] hover:bg-white/20 transition-colors duration-200 min-w-[188px]"
             data-testid="btn-book-stay"
           >
             Book a Stay
           </button>
-          <button 
-            className="btn-outline justify-center py-4 px-8 text-[15px]" 
-            onClick={onLandlord}
-            data-testid="btn-landlord"
-          >
-            I Have a Property
-          </button>
         </div>
       </div>
 
-      <div 
-        className={`absolute bottom-12 left-1/2 -translate-x-1/2 transition-all duration-700 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
-        style={{ transitionDelay: '800ms' }}
-      >
-        <div className="w-[1px] h-10 bg-gold mx-auto animate-pulse opacity-60" />
-      </div>
+      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
     </section>
   );
 }

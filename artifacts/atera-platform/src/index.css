@@ -122,8 +122,29 @@ body {
   .section-dark, .section-surface, .section-cream { padding: 80px 0; }
 }
 
+/* Hero load animations */
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-item {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.85s cubic-bezier(0.16,1,0.3,1), transform 0.85s cubic-bezier(0.16,1,0.3,1);
+}
+.hero-item.hero-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Scroll reveal */
-.reveal { opacity: 0; transform: translateY(32px); transition: opacity 600ms cubic-bezier(0.25,0.1,0.25,1), transform 600ms cubic-bezier(0.25,0.1,0.25,1); }
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity  1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
 .reveal.revealed { opacity: 1; transform: translateY(0); }
 
 /* Button hover */

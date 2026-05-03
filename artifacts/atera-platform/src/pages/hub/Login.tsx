@@ -14,9 +14,7 @@ export function HubLogin() {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
-
     const { error } = await signIn(email, password);
-    
     if (error) {
       setError(error);
       setIsLoading(false);
@@ -26,54 +24,56 @@ export function HubLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080709] flex flex-col items-center justify-center p-4 relative grain-overlay">
-      <div className="w-full max-w-[420px] bg-[#0D0C0F] border border-[rgba(201,168,76,0.15)] p-10 relative z-10 shadow-2xl">
-        <div className="flex flex-col items-center mb-8">
-          <img src="/atera-logo.svg" height="64" alt="Atera Stays" className="mb-6 w-16 h-16" />
-          <h3 className="font-display text-2xl text-white mb-2">Atera Stays</h3>
-          <div className="label-style text-grey-1">Hub Access — Internal Only</div>
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
+      {/* Background gradient */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 60%)"
+      }} />
+
+      <div className="relative w-full max-w-[360px]">
+        {/* Logo + title */}
+        <div className="flex flex-col items-center mb-10">
+          <img src="/atera-logo.png" alt="Atera Stays" className="h-14 w-auto mb-6" />
+          <h1 className="text-white text-[22px] font-semibold tracking-tight mb-1">Operations Hub</h1>
+          <p className="text-[#636366] text-[13px]">Internal access only</p>
         </div>
 
-        <div className="gold-rule mb-8"></div>
-
-        <form onSubmit={handleLogin} className="flex flex-col gap-6">
-          <div>
-            <input 
-              type="email" 
-              required
-              placeholder="Email Address"
-              className="w-full bg-[#0D0C0F] border border-border-light border-b-[rgba(201,168,76,0.3)] text-white p-3 font-body font-light focus:border-gold outline-none transition-colors"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              data-testid="input-email"
-            />
-          </div>
-          <div>
-            <input 
-              type="password" 
-              required
-              placeholder="Password"
-              className="w-full bg-[#0D0C0F] border border-border-light border-b-[rgba(201,168,76,0.3)] text-white p-3 font-body font-light focus:border-gold outline-none transition-colors"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              data-testid="input-password"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            className="btn-gold w-full justify-center py-4 mt-4 disabled:opacity-50"
-            data-testid="btn-signin"
-          >
-            {isLoading ? "Authenticating..." : "Sign In"}
-          </button>
+        <form onSubmit={handleLogin} className="flex flex-col gap-3">
+          <input
+            type="email"
+            required
+            autoComplete="email"
+            placeholder="Email"
+            className="w-full bg-[#1c1c1e] border border-[#2c2c2e] text-white text-[15px] px-4 py-3 rounded-[12px] outline-none placeholder:text-[#636366] focus:border-[#636366] transition-colors duration-200"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            data-testid="input-email"
+          />
+          <input
+            type="password"
+            required
+            autoComplete="current-password"
+            placeholder="Password"
+            className="w-full bg-[#1c1c1e] border border-[#2c2c2e] text-white text-[15px] px-4 py-3 rounded-[12px] outline-none placeholder:text-[#636366] focus:border-[#636366] transition-colors duration-200"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            data-testid="input-password"
+          />
 
           {error && (
-            <div className="text-error text-sm text-center mt-2 bg-error/10 p-2 border border-error/20">
+            <div className="bg-[#2c1c1c] border border-[#ff3b30]/30 text-[#ff3b30] text-[13px] text-center px-4 py-2.5 rounded-[10px]">
               {error}
             </div>
           )}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-white text-black py-3 rounded-[980px] font-semibold text-[15px] hover:bg-[#e8e8ed] transition-colors duration-200 disabled:opacity-40 mt-2"
+            data-testid="btn-signin"
+          >
+            {isLoading ? "Signing in…" : "Sign In"}
+          </button>
         </form>
       </div>
     </div>

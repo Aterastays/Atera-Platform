@@ -5,22 +5,23 @@ interface CTAStripProps {
 
 export function CTAStrip({ onBookStay, onLandlord }: CTAStripProps) {
   return (
-    <section className="bg-gold py-24 px-6 text-center">
-      <div className="max-w-3xl mx-auto reveal">
-        <h2 className="font-display text-4xl md:text-5xl text-black mb-4">Ready to Get Started?</h2>
-        <p className="font-body text-[rgba(0,0,0,0.6)] text-lg mb-10">Whether you're looking for premium accommodation or a reliable property partner.</p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button 
+    <section className="bg-black text-white py-32 border-t border-[#1d1d1f]">
+      <div className="max-w-[720px] mx-auto px-6 text-center">
+        <h2 className="reveal text-[52px] font-bold tracking-[-0.03em] leading-[1.08] mb-10">
+          Ready to upgrade your property experience?
+        </h2>
+        <div className="reveal flex flex-col sm:flex-row items-center justify-center gap-3" style={{ transitionDelay: "0.15s" }}>
+          <button
+            onClick={onLandlord}
+            className="bg-white text-black px-8 py-3.5 rounded-[980px] font-semibold text-[15px] hover:bg-[#e8e8ed] transition-colors duration-200 min-w-[190px]"
+          >
+            Get a Free Valuation
+          </button>
+          <button
             onClick={onBookStay}
-            className="bg-black text-gold px-8 py-4 font-body font-medium text-sm tracking-wider uppercase hover:-translate-y-1 transition-transform"
+            className="bg-[#1d1d1f] text-white px-8 py-3.5 rounded-[980px] font-semibold text-[15px] hover:bg-[#2c2c2e] transition-colors duration-200 min-w-[190px]"
           >
             Book a Stay
-          </button>
-          <button 
-            onClick={onLandlord}
-            className="border border-black text-black px-8 py-4 font-body font-medium text-sm tracking-wider uppercase hover:bg-black/5 hover:-translate-y-1 transition-all"
-          >
-            I Have a Property
           </button>
         </div>
       </div>
