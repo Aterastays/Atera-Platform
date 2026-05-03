@@ -206,12 +206,14 @@ create policy "hub_admins_self_read" on hub_admins
   using (user_id = auth.uid());
 
 -- ───────────────────────────────────────
--- Anonymous: INSERT only on enquiries (public contact form)
+-- Anonymous: no direct table access for enquiries.
+-- Public enquiry submissions must go through the /api/enquiry Express route,
+-- which applies IP-based rate limiting, field validation, length truncation,
+-- and enum checks before inserting with the service role (which bypasses RLS).
+-- Granting the anon role direct INSERT access would allow anyone with the
+-- public anon key to bypass all of those controls entirely.
 -- ───────────────────────────────────────
 drop policy if exists "anon_insert_enquiries" on enquiries;
-create policy "anon_insert_enquiries" on enquiries
-  for insert to anon
-  with check (true);
 
 -- ───────────────────────────────────────
 -- Public properties view — intentionally limited column set
