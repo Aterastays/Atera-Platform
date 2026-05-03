@@ -1,0 +1,20 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "aXcPX4XkMD_mceFiOHrW7"
+uri = "file://artifacts/mockup-sandbox/public/images/hero-apartment.png"
+type = "image"
+title = "Luxury apartment interior at dusk"
+
+[[generated]]
+id = "MDF4eeyMZ6kkUXiF2d-a8"
+uri = "file://artifacts/mockup-sandbox/public/images/landlord-exterior.png"
+type = "image"
+title = "UK townhouse exterior golden hour"
+
+[[generated]]
+id = "WSIaeP8TT7V4ucZAkrt2T"
+uri = "file://artifacts/mockup-sandbox/public/images/guest-office.png"
+type = "image"
+title = "Serviced apartment home office"
