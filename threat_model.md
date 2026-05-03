@@ -18,7 +18,7 @@ The mockup sandbox is development-only and is not production scope. In productio
 
 - **Browser to React app** -- public visitors can access landing, privacy, terms, live property listings, and enquiry forms; Hub pages should only be usable by authenticated internal users.
 - **Browser/public client to Express API** -- `/api/enquiry`, `/api/properties/live`, and all mounted Express routes receive untrusted network requests and must perform authentication, authorization, input validation, and rate limiting appropriate to their sensitivity.
-- **React Hub to Supabase** -- the frontend uses the public Supabase anon key; Supabase RLS policies are the primary server-side authorization layer for Hub data.
+- **React/public frontend to Supabase** -- the frontend uses the public Supabase anon key; Supabase RLS policies are the primary server-side authorization layer for Hub data and must ensure anonymous users can only access intentionally public views or tightly constrained public workflows.
 - **Express API to Supabase** -- `/api/enquiry` uses the Supabase service role key and therefore bypasses RLS; the route must strictly constrain accepted writes.
 - **Express API to Drizzle/PostgreSQL** -- management routes access database tables directly; SQL injection risk is reduced by Drizzle query builders, but route-level authentication and authorization must be enforced before any database operation.
 - **Express API to Resend** -- public enquiry data crosses into email content; user-supplied fields must be treated as untrusted HTML/text.
@@ -39,7 +39,7 @@ Hub users authenticate through Supabase Auth. Protected Hub data must only be ac
 
 ### Tampering
 
-The client is untrusted. All database writes must be authorized server-side or by Supabase RLS. Public enquiry writes use a service role key, so the Express handler must validate and allowlist request fields before inserting data or generating emails. Destructive operations such as deleting properties, bookings, CRM records, customers, devices, alerts, or tickets must require an appropriately privileged authenticated actor.
+The client is untrusted. All database writes must be authorized server-side or by Supabase RLS. Public enquiry writes use a service role key, so the Express handler must validate and allowlist request fields before inserting data or generating emails. Anonymous users must not be able to bypass those handler controls by writing directly to Supabase tables with the public anon key. Destructive operations such as deleting properties, bookings, CRM records, customers, devices, alerts, or tickets must require an appropriately privileged authenticated actor.
 
 ### Information Disclosure
 
