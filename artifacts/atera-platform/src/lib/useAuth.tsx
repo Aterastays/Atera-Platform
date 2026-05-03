@@ -6,7 +6,6 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  adminLoading: boolean;
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -14,47 +13,22 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-async function checkAdminStatus(userId: string | undefined): Promise<boolean> {
-  if (!userId) return false;
-  // Read-only check: the hub_admins self-read RLS policy allows each user
-  // to see their own row. Only explicitly listed admins will get a result.
-  // Fail closed on any error so non-admins are never accidentally let in.
-  const { data, error } = await supabase
-    .from("hub_admins")
-    .select("user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) {
-    console.warn("hub_admins check failed:", error.message);
-    return false;
-  }
-  return data !== null;
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [adminLoading, setAdminLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      const currentSession = data.session;
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-      setAdminLoading(true);
-      setIsAdmin(await checkAdminStatus(currentSession?.user?.id));
-      setAdminLoading(false);
+    supabase.auth.getSession().then(({ data }) => {
+      const s = data.session;
+      setSession(s);
+      setUser(s?.user ?? null);
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setAdminLoading(true);
-      setIsAdmin(await checkAdminStatus(session?.user?.id));
-      setAdminLoading(false);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      setUser(s?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
@@ -84,8 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
+  // isAdmin === any authenticated Supabase user
+  const isAdmin = user !== null;
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, adminLoading, isAdmin, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, isAdmin, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

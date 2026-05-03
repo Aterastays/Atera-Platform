@@ -4,8 +4,8 @@ export const modules: ModuleMap = {
   "./components/mockups/atera-landing/Landing.tsx": () => import("../components/mockups/atera-landing/Landing.tsx"),
   "./components/mockups/aurum/Aurum.tsx": () => import("../components/mockups/aurum/Aurum.tsx"),
   "./components/mockups/blanc/Blanc.tsx": () => import("../components/mockups/blanc/Blanc.tsx"),
-  "./components/mockups/cinema/Cinema.tsx": () => import("../components/mockups/cinema/Cinema.tsx"),
   "./components/mockups/ivory/Ivory.tsx": () => import("../components/mockups/ivory/Ivory.tsx"),
+  "./components/mockups/obsidian/Obsidian.tsx": () => import("../components/mockups/obsidian/Obsidian.tsx"),
   "./components/mockups/noir/Noir.tsx": () => import("../components/mockups/noir/Noir.tsx"),
-  "./components/mockups/obsidian/Obsidian.tsx": () => import("../components/mockups/obsidian/Obsidian.tsx")
+  "./components/mockups/cinema/Cinema.tsx": () => import("../components/mockups/cinema/Cinema.tsx")
 };
