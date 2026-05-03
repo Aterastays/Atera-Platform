@@ -5,10 +5,14 @@ import devicesRouter from "./devices";
 import alertsRouter from "./alerts";
 import ticketsRouter from "./tickets";
 import dashboardRouter from "./dashboard";
+import enquiryRouter from "./enquiry";
+import publicPropertiesRouter from "./publicProperties";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(enquiryRouter);
+router.use(publicPropertiesRouter);
 router.use(customersRouter);
 router.use(devicesRouter);
 router.use(alertsRouter);

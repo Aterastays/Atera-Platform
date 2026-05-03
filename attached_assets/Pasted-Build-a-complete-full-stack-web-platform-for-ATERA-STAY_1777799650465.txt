@@ -1,0 +1,1069 @@
+Build a complete full-stack web platform for ATERA STAYS — a UK property 
+company operating two services: Atera Stays (Rent-to-Serviced 
+Accommodation / company let model) and Atera Management (full property 
+management for landlords). The legal entity is ATERA INDUSTRIES LTD 
+(England & Wales) but the trading brand shown throughout is ATERA Stays.
+The platform has two parts: a public-facing storytelling landing page 
+and a password-protected internal operations hub.
+
+NO deal sourcing functionality anywhere in the platform.
+
+═══════════════════════════════════════════════════════════
+TECH STACK
+═══════════════════════════════════════════════════════════
+
+Frontend:    React 18 + Vite
+Styling:     Tailwind CSS with custom design tokens
+Backend:     Node.js + Express
+Database:    Supabase (PostgreSQL)
+Auth:        Supabase Auth — email + password for hub login
+Payments:    Stripe — wire full structure, no active charges yet
+PDF:         jsPDF
+Email:       Resend.com API
+Icons:       Lucide React (SVG only — zero emoji anywhere)
+Fonts:       Cormorant Garamond + Inter (both from Google Fonts)
+Deployment:  Replit with environment variables via Replit Secrets
+
+═══════════════════════════════════════════════════════════
+LOGO
+═══════════════════════════════════════════════════════════
+
+The logo file is located at /public/atera-logo.png
+It is a transparent PNG (no background) — a gold monogram on 
+transparent background.
+Use it as an <img> tag with alt="Atera Stays" wherever the logo appears.
+Never add a background colour behind it.
+Never replace it with text.
+On dark backgrounds it shows gold naturally.
+On light backgrounds it shows gold naturally.
+Sizes: 
+  Navigation: height 40px, width auto
+  Hero section: height 80px, width auto, centred
+  Hub sidebar: height 32px, width auto
+  PDF header: referenced as text "ATERA" in Cormorant Garamond since 
+    jsPDF cannot render external images reliably — text treatment only 
+    in PDFs
+
+═══════════════════════════════════════════════════════════
+BRAND
+═══════════════════════════════════════════════════════════
+
+Trading name:   ATERA Stays
+Parent company: ATERA INDUSTRIES LTD (legal documents only)
+Services:       Atera Stays | Atera Management
+Registration:   England & Wales
+
+In navigation, hero, and all public-facing UI: "ATERA Stays"
+In contracts and footer legal text: "ATERA INDUSTRIES LTD"
+In hub internal areas: "Atera Stays" (trading name)
+
+═══════════════════════════════════════════════════════════
+DESIGN SYSTEM
+═══════════════════════════════════════════════════════════
+
+COLOUR PALETTE
+Gold:           #C9A84C  — CTAs, active states, accents only
+Gold light:     #E0BD6A  — hover states
+Gold dark:      #9A7A30  — pressed / light section gold
+Black:          #080709  — primary dark background
+Near black:     #0D0C0F  — sidebar, secondary dark surfaces
+Surface dark:   #131217  — cards on dark
+Surface deeper: #1A1920  — nested elements on dark
+Off white:      #E8E2D8  — primary text on dark
+Cream:          #F5F0E6  — light section backgrounds
+Cream dark:     #EDE8DC  — cards on cream
+Grey 1:         #8C8880  — secondary text
+Grey 2:         #5C5854  — tertiary text, placeholders
+Border dark:    rgba(201,168,76,0.12)
+Border light:   rgba(0,0,0,0.08)
+Success:        #2A9E68
+Error:          #C44444
+Warning:        #C47830
+
+TYPOGRAPHY
+Display:  72px / Cormorant Garamond 300 — hero headline
+H1:       48px / Cormorant Garamond 400 — section headlines
+H2:       36px / Cormorant Garamond 400 — card titles
+H3:       24px / Cormorant Garamond 500 — subsection titles
+H4:       18px / Inter 500
+Body:     16px / Inter 300 — main body, line-height 1.7
+Small:    14px / Inter 300
+Label:    11px / Inter 500 uppercase letter-spacing 0.15em
+Micro:    10px / Inter 500 uppercase
+
+SPACING — 8px base grid
+Section padding desktop: 128px top/bottom
+Section padding mobile:  80px top/bottom
+Card padding:            32px desktop, 24px mobile
+Grid gaps:               24px
+
+MOTION
+Respect prefers-reduced-motion: if set, disable all animations silently.
+Scroll reveals:    translateY(32px)→0 + opacity 0→1, 600ms, 
+                   cubic-bezier(0.25,0.1,0.25,1)
+                   Intersection Observer, threshold 0.15
+                   Stagger children: 80ms delay each
+Button hover:      translateY(-2px), 150ms ease
+Card hover:        translateY(-4px) + shadow increase, 200ms ease
+Modal open:        scale(0.97)→1 + opacity 0→1, 250ms ease
+Modal close:       reverse, 200ms
+Loading:           skeleton shimmer, not spinners
+Success:           SVG checkmark draw animation, 300ms
+Error:             input shake 200ms
+
+DESIGN PHILOSOPHY
+The landing page = Apple product storytelling.
+One message per section. Cinematic whitespace. Text animates in 
+on scroll. Story guides the visitor. No clutter.
+
+The hub = iOS precision.
+Like the iPhone Settings app. One primary action per screen.
+Information in digestible groups. Status shown through colour.
+A new user understands any page within 10 seconds.
+Works identically on a 390px iPhone and a 1440px desktop — 
+the layout adapts but no features are hidden or broken on mobile.
+
+RESPONSIVE
+Mobile:   < 768px   single column
+Tablet:   768–1024  two column where appropriate
+Desktop:  > 1024px  full layout
+
+═══════════════════════════════════════════════════════════
+ADDITIONAL PAGES REQUIRED
+═══════════════════════════════════════════════════════════
+
+/privacy — Privacy Policy page
+  Dark background, same nav/footer as main site
+  Sections: Data We Collect | How We Use It | 
+  Your Rights (GDPR) | Cookies | Contact
+  Note: registered with ICO, registration number [ICO_NUMBER]
+  Company: ATERA INDUSTRIES LTD
+  
+/terms — Terms & Conditions page
+  Dark background, same nav/footer
+  Sections: Use of Site | No Financial Advice | 
+  Enquiries Not Contracts | Limitation of Liability | Governing Law
+
+/404 — Custom 404 page
+  Dark background, large "404" in Cormorant gold, 
+  "Page not found" text, link back to home
+
+Favicon: use /public/atera-logo.png as favicon
+  Add <link rel="icon" href="/atera-logo.png"> in index.html
+
+SEO meta tags on every page:
+  <meta name="description" content="Premium short-term stays and 
+  professional property management. Guaranteed rent for landlords. 
+  Corporate and contractor accommodation across England.">
+  <meta property="og:title" content="Atera Stays — Premium Property Services">
+  <meta property="og:description" content="...same...">
+  <meta property="og:image" content="/atera-logo.png">
+  <meta name="theme-color" content="#080709">
+
+Cookie consent banner:
+  Fixed bottom of screen, dark background, gold border top
+  "We use cookies to improve your experience."
+  "Accept" button (gold) | "Decline" button (outline)
+  Stores preference in localStorage
+  Hides after choice
+
+═══════════════════════════════════════════════════════════
+PUBLIC LANDING PAGE  /
+═══════════════════════════════════════════════════════════
+
+NAVIGATION
+Fixed top. Transparent → solid (#0D0C0F) after 60px scroll, 300ms.
+Left: <img src="/atera-logo.png" height="40"> with "ATERA Stays" 
+  text beside it in Cormorant Garamond gold (hidden on mobile, 
+  show only logo image)
+Centre desktop: Stays | Management | Properties | How It Works
+Right: "Book a Stay" (gold fill) | "I Have a Property" (gold outline)
+Mobile: hamburger → full-screen dark overlay menu
+
+─────────────────────────────────────────────────────────
+HERO  (100vh)
+─────────────────────────────────────────────────────────
+Background: #080709
+CSS grain texture overlay (SVG filter, opacity 0.03, fixed)
+Subtle radial glow: rgba(201,168,76,0.06) at 50% 40%
+Gold corner brackets (CSS only): top-left, top-right
+
+Content centred vertically + horizontally:
+1. Eyebrow: "ATERA STAYS" — label style, gold
+2. Logo: <img src="/atera-logo.png" height="80"> centred
+3. Tagline: "Premium Stays," italic line-break "Proven Management."
+   — 64px Cormorant 300, white
+4. Subline: "Professionally managed short stays for guests. 
+   Guaranteed rent and full property management for landlords."
+   — Inter 300, grey-1, max-width 480px centred
+5. Buttons: "Book a Stay" (gold fill) | "I Have a Property" (outline)
+6. Scroll line: 1px gold, 40px, animated pulse, bottom centre
+
+Animate in on load (sequential, 100ms apart, 600ms each):
+eyebrow → logo → tagline → subline → buttons → scroll
+
+─────────────────────────────────────────────────────────
+TRUST BAR
+─────────────────────────────────────────────────────────
+Background #0D0C0F, gold borders top and bottom
+5 stats: "100%" Guaranteed Rent | "3–5yr" Agreements | 
+"£0" Void Risk | "24/7" Guest Support | "1" Point of Contact
+Numbers: 42px Cormorant 600 gold. Labels: 11px Inter 500 grey-1
+Vertical 1px dividers between stats
+Mobile: 2+2+1 wrap, no dividers
+
+─────────────────────────────────────────────────────────
+SERVICES  #services
+─────────────────────────────────────────────────────────
+Background #131217
+Eyebrow, "Two Ways We Work" H1 centred, gold rule
+
+Two cards side by side (stack mobile):
+Background #080709, border rgba(201,168,76,0.15), padding 48px
+
+CARD 1 — STAYS PARTNERSHIP:
+Lucide icon: Home (gold, 32px)
+"Stays Partnership" H2 white
+"We become your company tenant. Fixed monthly rent regardless of 
+occupancy. All guests managed. All operations handled."
+4 bullet points (gold dash):
+  Fixed rent, occupied or not
+  Corporate and contractor guests
+  Full professional management
+  3–5 year agreements with break clause
+CTA: "Enquire — Stays Partnership"
+
+CARD 2 — PROPERTY MANAGEMENT:
+Lucide icon: FileText (gold, 32px)
+"Full Property Management" H2 white
+"We manage your property completely. Tenants, rent collection, 
+maintenance, compliance, inspections. You keep ownership. 
+We remove all administration."
+4 bullets:
+  Tenant sourcing and referencing
+  Rent collection, arrears management
+  Quarterly inspections, photo reports
+  Full compliance certificate tracking
+CTA: "Enquire — Property Management"
+
+─────────────────────────────────────────────────────────
+PROPERTIES  #properties
+─────────────────────────────────────────────────────────
+Background #080709
+"AVAILABLE NOW" eyebrow, "Our Properties" H1, gold rule
+
+Fetch from Supabase: status='live', service_type='stays'
+Property cards (3 col desktop / 2 tablet / 1 mobile):
+  Photo with transparent SVG fallback:
+    SVG = black rect, gold grid lines, gold building silhouette 
+    shapes, gold text "ATERA STAYS" centred in label style
+  Property name H3 white
+  Postcode — label gold
+  Beds — small grey-1 (Lucide BedDouble icon 14px inline)
+  Estimated nightly rate — 28px Cormorant gold
+  Book button with "COMING SOON" overlay:
+    Semi-transparent dark overlay on button
+    "Booking Coming Soon" text + Lucide Clock icon
+    Gold outline, not filled — visually clear but disabled
+Card hover: translateY(-6px), border brightens, photo scale(1.04)
+
+No live properties: show 3 placeholder cards with SVG fallback + overlay
+
+─────────────────────────────────────────────────────────
+HOW IT WORKS  #how
+─────────────────────────────────────────────────────────
+Background #F5F0E6 (cream — breaks dark rhythm)
+"HOW IT WORKS" eyebrow gold-dark, "Simple From Start to Stay" H1 dark
+
+Two columns, thin gold vertical divider between (stack mobile):
+
+FOR GUESTS — 4 steps:
+01 Browse available properties
+02 Submit a booking enquiry
+03 We confirm availability and pricing
+04 Arrive to a professionally managed property
+
+FOR LANDLORDS — 4 steps:
+01 Submit your property enquiry
+02 Quick consultation call
+03 We assess and present a tailored offer
+04 Agreement signed, property launched
+
+Each step: large faded Cormorant number (80px, opacity 0.15 gold),
+step text Inter 300 16px #363330
+
+─────────────────────────────────────────────────────────
+MANAGEMENT PITCH  #management
+─────────────────────────────────────────────────────────
+Background #080709
+
+Left column:
+"ATERA MANAGEMENT" eyebrow gold
+"Professional Management for Your Portfolio." H1 white
+Gold rule
+Body: "Already renting your property and want it handled properly? 
+Atera Management is a complete managed service. We place tenants, 
+collect rent, coordinate maintenance, track compliance, and report 
+monthly. You keep ownership. We remove every burden."
+6 bullets (gold dash):
+  Tenant sourcing, referencing, right-to-rent checks
+  Rent collection and arrears management
+  Quarterly inspections with photographic reports
+  Gas, EICR and compliance certificate tracking
+  Monthly financial statements
+  Deposit registration and end-of-tenancy management
+CTA: "Enquire About Management" — dark fill, hover gold border
+
+Right column — 2×2 feature card grid:
+Background #131217 cards
+Tenant Management | Compliance | Maintenance | Reporting
+Each: Lucide icon gold, title Inter 500, body Inter 300 grey-1
+
+─────────────────────────────────────────────────────────
+TESTIMONIALS
+─────────────────────────────────────────────────────────
+Background #F5F0E6
+"TESTIMONIALS" eyebrow gold-dark, "Trusted by Landlords & Guests" H1 dark
+
+3 white cards, shadow 0 2px 20px rgba(0,0,0,0.06):
+SVG 5 gold stars (not emoji, not unicode — actual SVG path star shapes)
+Quote Cormorant italic 18px #333 line-height 1.7
+Name Inter 500 14px, Role Inter 400 12px gold-dark
+
+"The rent arrives on exactly the same date every month. I have not 
+had to deal with a single issue since signing." 
+— David M., Landlord, Manchester
+
+"Far better than a hotel for my six-week contract. Felt like a home, 
+great location, team always responsive." 
+— Sarah K., Corporate Guest, Birmingham
+
+"They explained everything clearly, agreement was straightforward, 
+and I have complete peace of mind." 
+— Patricia L., Landlord, Leeds
+
+─────────────────────────────────────────────────────────
+CTA STRIP
+─────────────────────────────────────────────────────────
+Background #C9A84C solid gold
+"Ready to Get Started?" Cormorant 48px black centred
+Subtext Inter, rgba(0,0,0,0.6)
+"Book a Stay" (black fill, gold text) | "I Have a Property" (black outline)
+
+─────────────────────────────────────────────────────────
+FOOTER
+─────────────────────────────────────────────────────────
+Background #080709, gold top border 1px
+
+3 columns:
+Col 1: <img src="/atera-logo.png" height="38"> + "Atera Stays" text
+  "Atera Stays · Atera Management"
+  "Premium property services across England."
+  "Member of The Property Ombudsman."
+  "ATERA INDUSTRIES LTD — Registered in England & Wales"
+
+Col 2: Services
+  Book a Stay | Stays Partnership | Property Management
+
+Col 3: Company
+  Privacy Policy (link to /privacy)
+  Terms & Conditions (link to /terms)
+  ICO Registered — Data Controller
+
+Bottom: "© 2025 ATERA INDUSTRIES LTD. All rights reserved." | 
+"Not financial or legal advice."
+
+═══════════════════════════════════════════════════════════
+ENQUIRY MODALS
+═══════════════════════════════════════════════════════════
+
+Backdrop: rgba(4,3,6,0.92), blur 12px
+Modal: #0D0C0F, border rgba(201,168,76,0.2), max-width 560px, 
+  max-height 90vh, overflow-y auto, sharp corners (no border-radius)
+Open: scale(0.97)→1 + opacity 0→1, 250ms ease
+Close: ESC, click outside, X button (Lucide X icon)
+
+GDPR notice in every modal (small text, grey, below submit button):
+"By submitting this form you agree to our Privacy Policy. 
+Your data will be used to respond to your enquiry only."
+Link to /privacy
+
+MODAL A — GUEST BOOKING
+"DIRECT BOOKING" tag, "Book Your Stay" headline
+"No payment taken now. We respond within hours."
+
+Fields:
+  First Name | Last Name
+  Email (required, validate format)
+  Phone
+  Property (select from Supabase live properties, populated on open)
+  Check-In | Check-Out (validate checkout > checkin)
+  Guests (number) | Type of Stay (select)
+  Message (optional textarea)
+
+"Send Booking Enquiry" gold full-width button
+Loading state: spinner in button, disabled
+On success: animated SVG checkmark + "Enquiry Sent" + description
+On error: inline error message in red below button
+
+POST /api/enquiry → Supabase insert → Resend emails
+
+MODAL B — LANDLORD (multi-step)
+Step 1: Two large tap cards:
+  [Home icon] "Stays Partnership" "Guaranteed rent, full management"
+  [FileText icon] "Property Management" "We manage your property"
+
+Step 2a — Stays:
+  Back button
+  Name | Phone, Email, Address, 
+  Bedrooms | Current Rent, 
+  Tenanted | Available From, Notes
+  Submit → same flow as Modal A
+
+Step 2b — Management:
+  Back button
+  Name | Phone, Email, Address,
+  Bedrooms | Current Situation,
+  Goals textarea
+  Submit → same flow
+
+All validation: red border + inline message per field
+Required fields clearly marked with * in label
+
+═══════════════════════════════════════════════════════════
+INTERNAL HUB  /hub/*
+═══════════════════════════════════════════════════════════
+
+SESSION
+Supabase Auth handles sessions.
+Auto-logout after 30 minutes of inactivity (use setTimeout, 
+reset on any user interaction event).
+All /hub routes redirect to /hub/login if no session.
+
+LOGIN PAGE  /hub/login
+Full-screen #080709
+Centred card max-width 420px, #0D0C0F, border rgba(201,168,76,0.15):
+  <img src="/atera-logo.png" height="64"> centred
+  "Atera Stays" H3 white centred
+  "Hub Access — Internal Only" label grey-1 centred
+  Gold rule
+  Email input
+  Password input
+  "Sign In" gold full-width button
+  Error message area (red, below button)
+  Loading state on button
+
+─────────────────────────────────────────────────────────
+HUB SHELL LAYOUT
+─────────────────────────────────────────────────────────
+
+SIDEBAR (fixed left, no overlap with content)
+Desktop >1024px:   240px, icons + labels visible
+Tablet 768-1024px: 64px, icons only, labels on hover tooltip
+Mobile <768px:     0px width, hidden, slides in full-width from 
+  left when hamburger tapped, semi-transparent overlay behind it
+
+Background: #0D0C0F, right border: 1px rgba(201,168,76,0.12)
+
+Top section:
+  <img src="/atera-logo.png" height="32">
+  "Atera Stays" Cormorant gold (visible desktop only)
+  "Operations Hub" label grey-1 (visible desktop only)
+  Gold rule
+
+Navigation (Lucide icons, 18px, no emoji):
+  OVERVIEW
+    Dashboard (LayoutDashboard)
+    Command Centre (LayoutGrid)
+  PROPERTIES
+    Properties (Building2)
+  CRM
+    Landlord CRM (Users) + red badge new leads count
+    Guest Bookings (CalendarDays)
+    Enquiry Inbox (Inbox) + red badge unread count
+  TOOLS
+    Deal Analyser (TrendingUp)
+  DOCUMENTS
+    Contracts (FileText)
+  RESOURCES
+    Scripts & Templates (MessageSquare)
+    Partner Onboarding (GraduationCap)
+  SYSTEM
+    Settings & KPIs (Settings)
+
+Active item: 3px gold left border, gold text, 
+  rgba(201,168,76,0.07) background
+Section labels: 10px Inter 500 uppercase grey-2, 
+  hidden on tablet (icon-only mode)
+
+Bottom:
+  User email (truncated, grey-1)
+  "Atera Stays" micro grey-2
+  Sign Out button (LogOut icon, red on hover)
+
+TOP BAR (fixed, fills width minus sidebar)
+Height 60px, #0D0C0F, bottom border rgba(201,168,76,0.12)
+Left: hamburger button (mobile/tablet) + page title Cormorant 22px
+Right: date Inter 13px grey-1 + "INTERNAL ONLY" badge gold
+
+MAIN CONTENT AREA
+Fills ALL remaining width — no max-width restriction
+Background #080709
+Padding: 32px desktop, 20px mobile
+Overflow-y: auto
+
+─────────────────────────────────────────────────────────
+DASHBOARD  /hub/dashboard
+─────────────────────────────────────────────────────────
+
+KPI GRID — responsive, fills full width:
+Desktop 4-4-1: 9 cards in 3 rows (4, 4, 1 or 3+3+3)
+Tablet: 3 columns
+Mobile: 2 columns
+
+Cards: #131217, gold top accent 1.5px, label 11px grey-1, 
+value Cormorant 36px gold — compact, no wasted space
+
+Total Properties | Live Properties | Monthly Revenue | Avg Occupancy |
+Active Leads | Active Bookings | Enquiry Inbox | Upcoming Stays | 
+Follow-Ups Today
+
+Follow-Ups Today: amber value if > 0
+Inbox: red value if > 0
+
+Below KPIs — two columns (60/40 split, stack mobile):
+LEFT: "Recent Activity" panel
+  Table: Type badge | Name | Detail | Date received
+  Last 10 actions: enquiries + leads + bookings combined
+  Sorted newest first
+  Empty: "No recent activity yet."
+
+RIGHT: "Pending Tasks" panel
+  Sorted by due date ascending
+  Item: checkbox + task text + due date
+  Overdue: red date
+  Completed: grey strikethrough
+  Empty: "No pending tasks."
+
+Panel style: #131217 background, gold label header, 
+clean content — no inner borders
+
+─────────────────────────────────────────────────────────
+COMMAND CENTRE  /hub/command
+─────────────────────────────────────────────────────────
+
+4 large KPI cards top row (full width divided equally):
+Inbox | Active Leads | Live Properties | Monthly Revenue
+Larger than dashboard cards — command centre is an overview screen
+
+3-column panel layout below (1 column mobile):
+LEFT "New Enquiries":
+  Cards from inbox, each: name + type badge + time ago + Import button
+  Import: moves to Bookings (guest) or CRM (landlord)
+  Empty: clean message
+
+CENTRE "Active Landlord Leads":
+  Cards: name + service badge + pipeline stage + follow-up date
+  Follow-up past due: red date
+  Empty: clean message
+
+RIGHT "Live Properties":
+  Cards: name + beds + monthly revenue + occupancy %
+  Revenue in gold Cormorant
+  Empty: "No live properties yet."
+
+All panels: #131217, gold header label, #1A1920 item cards
+
+─────────────────────────────────────────────────────────
+PROPERTIES  /hub/properties
+─────────────────────────────────────────────────────────
+
+Two views controlled by React state (not separate routes):
+LIST ↔ DETAIL with smooth opacity transition
+
+LIST VIEW:
+Collapsible Add Property form (+ button collapses/expands):
+  Name*, Address*, Postcode, Beds, Service Type, Status,
+  Launch Date, Monthly Revenue, Occupancy Rate, Cleaning Costs, Notes
+  Two-column grid desktop, single mobile
+  Add button → insert to Supabase → refresh list
+
+Filter row: search input + pill buttons All | Stays | Management
+
+Table (desktop):
+Thumbnail (44×33px, object-fit cover, gold SVG fallback if no photo) +
+Name/Address | Beds | Type badge | Status badge | Revenue | 
+Occ % | Launch Date | Delete (Trash2 icon, red on hover)
+Row cursor pointer, hover background rgba(201,168,76,0.03)
+
+Mobile: stacked cards (photo top strip, details below)
+Tap row/card → transition to DETAIL VIEW
+
+DETAIL VIEW:
+Header: "← All Properties" back button + status + type badges + 
+  Edit button
+
+Grid section 1 (2 col desktop / 1 mobile):
+  Property Info card: all fields, Edit → inline inputs → Save/Cancel
+  Performance card: 4 stat blocks + inline update inputs + Save
+
+Grid section 2:
+  Photos card: URL input + Add button, 
+    thumbnail grid 90×68 each, X removes,
+    if empty: full-width SVG placeholder (black bg, gold building 
+    outline shapes, "ATERA STAYS" label text centred)
+  Linked Landlord card: name/phone/email if linked, 
+    "View in CRM" button, empty state if none
+
+Grid section 3:
+  Bookings card: last 5 bookings (name + dates + status badge)
+    "View All" link
+  Tasks card: add task form (description + date) + task list
+    checkbox complete, red if overdue
+
+─────────────────────────────────────────────────────────
+LANDLORD CRM  /hub/crm
+─────────────────────────────────────────────────────────
+
+Collapsible Add Lead form:
+  Name*, Phone, Email, Source (select), Address, Postcode, Beds,
+  Service Type, Pipeline Status, Rent £, Tenanted, Follow-up Date
+  Notes textarea — with "Insert Template" button (small gold outline, 
+    Lucide FileText icon, opens template picker modal filtered to landlord)
+  Add Lead button
+
+Pipeline stages: new | called | analysing | offer | contract | live | lost
+
+Filter row: search + status dropdown + service type dropdown
+
+Table (desktop):
+Name | Address | Beds | Type badge | 
+Status (inline <select>, updates Supabase on change without reload) |
+Source | Follow-up (red if past today) | 
+Notes (truncated 40 chars) | Added | Delete
+
+Mobile: card per lead — name large, badges visible, follow-up date, 
+  tap card to expand full details inline
+
+─────────────────────────────────────────────────────────
+GUEST BOOKINGS  /hub/bookings
+─────────────────────────────────────────────────────────
+
+Collapsible Log Booking form:
+  Name*, Phone, Email, 
+  Property (select from live properties in Supabase),
+  Check-In, Check-Out, Nightly Rate £
+  Auto-calculate display: "X nights — £TOTAL" (read-only, updates live)
+  Guests, Source
+  Message textarea — with "Insert Template" button (guest templates)
+  Log Booking button
+
+Statuses: new | contacted | confirmed | completed
+
+Filter: status dropdown + search
+
+Table (desktop):
+Guest name/email | Property | Check-In | Check-Out | Nights | 
+Total (Cormorant gold) | Guests | 
+Status (inline select, updates on change) | Source
+
+Mobile: booking card per item
+
+─────────────────────────────────────────────────────────
+ENQUIRY INBOX  /hub/inbox
+─────────────────────────────────────────────────────────
+
+Collapsible info banner (gold left border, ChevronDown to hide):
+"Enquiries submitted on the public site appear here automatically. 
+They are saved to Supabase and visible on any device."
+
+Filter row: type filter + Refresh button (RefreshCw icon) + count
+
+Table:
+Type badge | Name + email/phone below | Address/Property | 
+Service detail | Time received (relative: "2 hours ago") |
+Import button + Dismiss (X) button
+
+Import → guest: creates Bookings record + marks imported=true
+Import → landlord: creates Leads record + marks imported=true
+Both: remove from inbox view
+
+Empty: large "0" Cormorant grey, "No enquiries yet." below,
+  explanation of how bridge works
+
+─────────────────────────────────────────────────────────
+DEAL ANALYSER  /hub/analyser
+─────────────────────────────────────────────────────────
+
+Info alert banner (collapsible)
+
+Atera Score panel (hidden until calculation runs):
+  Circular display: grade letter + score /100, colour coded
+  Score breakdown: animated horizontal bars per category
+
+Two input panels (side by side desktop, stacked mobile):
+
+LEFT "Property & Costs":
+  Reference, Postcode, Monthly Rent £*, Bills £,
+  Platform Fee %, Cleaning £, Turns/month, Other Costs £,
+  Setup Cost £, Nightly Rate £*, Target Occupancy %*, Days/month
+  Reset button in panel header
+
+RIGHT "AirDNA Market Intelligence":
+  Distinct background (#131217 vs #0D0C0F for left)
+  Helper text: "Go to airdna.co → search postcode → Market Overview"
+  Market ADR £, Market Occupancy %, RevPAR £, Market Score 0-100,
+  Seasonality Risk (Low/Medium/High dropdown),
+  Demand Driver (Corporate/Contractor/Leisure/Mixed/Relocation dropdown)
+
+All inputs: oninput/onChange → live calculation
+
+Results grid (2×3 desktop, 1 col mobile):
+  Gross Revenue | Total Costs | Net Profit (green/amber/red by value) |
+  Break-Even Occ % | Annual Profit | Setup Payback
+
+3 scenario cards (equal thirds, stack mobile):
+  Bear: rate -10%, occ -10% → net profit
+  Base: your inputs → net profit  
+  Bull: rate +5%, occ +5% → net profit
+
+Verdict banner full width:
+  Pass (>£200 base, >£0 bear): green, "Deal Looks Strong — Progress"
+  Warn (>£0 base, ≤£0 bear): amber, "Marginal — Review Costs"  
+  Fail (≤£0 base): red, "Reject or Renegotiate"
+  Text explanation of result
+
+Atera Score 0-100:
+  Profitability:       /25 — profit/rent margin
+  Bear Case:           /20 — bear case resilience
+  Break-Even Safety:   /15 — headroom vs market occ
+  Rate vs ADR:         /15 — your rate vs AirDNA ADR
+  Market Demand:       /15 — AirDNA score + demand driver bonus
+  Setup Payback:       /10 — months to payback
+  Seasonality penalty: 0/-3/-7
+
+Grade: A+ (≥85) | A (≥75) | B (≥65) | C (≥50) | D (≥35) | F (<35)
+Each grade: colour-coded (green A+/A, gold B/C, red D/F)
+
+Score bars animate from 0 to value when calculation runs
+
+"Save to CRM" button → creates leads record with deal details
+
+─────────────────────────────────────────────────────────
+CONTRACTS  /hub/contracts
+─────────────────────────────────────────────────────────
+
+Tab bar: "Stays Partnership Agreement" | "Property Management Agreement"
+Gold underline on active (not filled background)
+Download PDF button at top AND bottom of each form
+
+STAYS PARTNERSHIP FIELDS:
+Landlord Details:   Full Name*, Address
+Property Details:   Address*, Type (select), Bedrooms
+Permissions:        Freeholder (select: Confirmed/Not applicable/Pending)
+                    Mortgage Lender (same), Insurer (same)
+Financial Terms:    Monthly Rent £*, Payment Day of Month, Deposit £,
+                    Minor Repairs Cap £, Start Date, Term (years),
+                    Break Notice (months), Break After (months)
+Signatory:          Director Name*, Company Number
+
+MANAGEMENT FIELDS:
+Landlord Details:   Full Name*, Address
+Property Details:   Address*, Type (select), Bedrooms
+Management Terms:   Management Fee %*, Start Date, Term (months),
+                    Minor Repairs Cap £, Remittance (working days)
+Signatory:          Director Name*, Company Number
+
+PDF GENERATION — EXACT SPECIFICATION:
+
+Page:        A4, portrait, white background #FFFFFF — always
+Top rule:    5px gold (#C9A84C), full page width — top of every page
+
+Header box (page 1 only):
+  Cream fill (#F8F6F2), gold border 0.5pt, rounded 0
+  "ATERA INDUSTRIES LTD" — 13pt Helvetica Bold, black, centred
+  Contract title — 8pt, #666666, centred
+  "PRIVATE & CONFIDENTIAL" — 8pt #666666, centred
+  Date — 7.5pt #666666, centred
+  Note: logo is text-only in PDF ("ATERA" in Cormorant style 
+    is not possible in jsPDF — use Helvetica Bold, 
+    add thin gold rule above and below company name instead)
+
+Section header bars:
+  Full TW width bar, fill #C9A84C, height 8mm
+  White text, 7.5pt Helvetica Bold, uppercase, left-padded 4mm
+  This is the ONLY use of gold fill in the document body
+
+Body:
+  Labels: 7.5pt Helvetica Bold, #666666
+  Values: 7.5pt Helvetica, #141414
+  Dividers between rows: 0.1pt line, #DDDDDD
+  Section spacing: 5mm gap between sections (whitespace, not rule)
+
+Clause numbers + titles:
+  "Clause N — Title": 8.5pt Helvetica Bold, #C9A84C — gold text only
+  Clause body: 7.5pt Helvetica, #141414, line-height 1.6
+
+Footer every page:
+  Cream fill bottom 10mm, gold top line 0.25pt
+  "ATERA INDUSTRIES LTD — Confidential — Requires independent 
+   legal review before execution" — 5.8pt grey centred
+  "Page N of N" — 5.8pt grey, right aligned
+
+Signature block:
+  Full-width gold rule 0.4pt
+  "EXECUTION" 9pt bold centred, 12mm gap below
+  Two equal columns:
+    "SIGNED by the Landlord:" | "SIGNED for ATERA INDUSTRIES LTD:"
+    14mm signature space
+    Full-width column line 0.3pt
+    Name printed, "Full Legal Name & Signature" subtext 6.5pt grey
+    "Date: _________________________" below
+
+Overall aesthetic: The document is 85% white, 10% black/grey, 
+5% gold. It should look like it came from a Magic Circle law firm. 
+Premium, clean, authoritative. The gold is architectural — it 
+structures the document, it does not decorate it.
+
+10 legal clauses per agreement, England & Wales, proper drafting:
+Stays clauses: Permissions Condition Precedent, Rent and Payment, 
+Permitted Use (inc. 90-night rule Deregulation Act 2015), 
+Maintenance, Safety Compliance (Gas Safety Regs, EICR Regs 2020, 
+Smoke/CO Alarm Regs 2022), Insurance, Indemnity, Termination, 
+Compliance with Law (inc. Renters Rights Act 2025), Governing Law
+
+Management clauses: Appointment and Authority, Management Fee, 
+Tenant Find and Referencing, Rent Collection and Arrears, 
+Inspections and Reporting, Maintenance (inc. repair cap threshold), 
+Safety Compliance, Deposit Handling (government-approved scheme), 
+Termination (2 months notice, handover obligations), Governing Law
+
+─────────────────────────────────────────────────────────
+SCRIPTS & TEMPLATES  /hub/scripts
+─────────────────────────────────────────────────────────
+
+Two-column layout (single col mobile):
+LEFT: "Guest Templates"
+RIGHT: "Landlord Templates"
+
+Within each: "Email Templates" section + "SMS Templates" section
+
+Template cards (accordion, smooth height animation):
+  Collapsed: label + chevron Lucide icon
+  Expanded: full text pre-wrap Inter 300 15px + 
+    Copy button (Clipboard icon, copies to clipboard, 
+    brief "Copied" tooltip confirmation)
+
+GUEST EMAIL: Initial Inquiry | Booking Confirmation | 
+  Check-In Instructions | Mid-Stay Check-In | 
+  Checkout Instructions | Review Request
+
+GUEST SMS: Booking Confirmation | Check-In Reminder
+
+LANDLORD EMAIL: First Response | Discovery Call Booked | 
+  Post-Call Follow-Up | Formal Offer | Agreement Sent | Property Live
+
+LANDLORD SMS: First Follow-Up | 7-Day Follow-Up
+
+Below templates full width:
+Call Scripts — 4 expandable cards
+Objection Handling — table: 6 objections, responses, next steps
+
+─────────────────────────────────────────────────────────
+PARTNER ONBOARDING  /hub/onboarding
+─────────────────────────────────────────────────────────
+
+7 numbered steps, cards:
+Large faded Cormorant number (opacity 0.15), 
+gold label title, Inter 300 body
+
+01 Understand the Two Models
+02 The Permissions Checklist (Stays)
+03 Using the Hub Daily
+04 Analysing a Deal with the Deal Analyser
+05 Generating Contracts
+06 Daily Operating Routine
+07 Adding Live Properties to the Public Site
+
+─────────────────────────────────────────────────────────
+SETTINGS & KPIs  /hub/settings
+─────────────────────────────────────────────────────────
+
+Panel 1: Change Password
+  Current Password, New Password, Confirm New Password
+  Update button → Supabase Auth update password
+  Success/error feedback inline
+
+Panel 2: Daily KPI Logger
+  Date, LL Calls, Agent Calls, Messages, New Leads, Offers
+  Save KPIs button → insert Supabase
+  Table below: last 14 entries, newest first
+
+Panel 3: Data Export
+  "Download All Leads CSV" → query Supabase → generate CSV → download
+  "Download All Bookings CSV" → same
+  "Download All Properties CSV" → same
+  Each button has loading state
+
+Panel 4: Data Management
+  "Clear All Data" button (Error red, Trash2 icon)
+  Two confirmation dialogs before executing
+  Deletes all records from all tables for this user
+
+─────────────────────────────────────────────────────────
+TEMPLATE PICKER MODAL (shared)
+─────────────────────────────────────────────────────────
+
+Opened by "Insert Template" buttons in CRM + Bookings
+
+Backdrop blur overlay
+Modal: #0D0C0F, max-width 620px, max-height 80vh, overflow-y scroll
+Header: "Select a Template" + X close button (sticky at top)
+
+Filtered by context (guest vs landlord):
+  Each item: label text + greyed preview (first 90 chars)
+  Click item → insert body into linked textarea → close modal
+
+═══════════════════════════════════════════════════════════
+DATABASE SCHEMA (Supabase)
+═══════════════════════════════════════════════════════════
+
+(Run the SQL provided in setup guide before running Agent)
+
+Tables: properties, leads, bookings, enquiries, tasks, kpis
+All with uuid primary keys, timestamptz created_at
+Row Level Security enabled on all tables:
+  Authenticated: full CRUD
+  Anonymous: INSERT only on enquiries, SELECT only live stays properties
+
+═══════════════════════════════════════════════════════════
+API ROUTES (Express)
+═══════════════════════════════════════════════════════════
+
+POST /api/enquiry
+  Validate required fields (name, email, type)
+  Insert to Supabase enquiries table using service role key
+  Send guest/landlord confirmation email via Resend
+  Send internal alert email to process.env.INTERNAL_EMAIL
+  Return {success: true} or {error: message}
+  Rate limit: 10 requests per IP per hour (use express-rate-limit)
+
+GET /api/properties/live
+  Public route, no auth
+  Select from properties where status='live' and service_type='stays'
+  Return: id, name, postcode, beds, monthly_revenue, photos
+  Cache-Control: max-age=300 (5 min cache)
+
+All hub data: Supabase JS client with Supabase Auth session token
+
+═══════════════════════════════════════════════════════════
+EMAIL TEMPLATES (Resend)
+═══════════════════════════════════════════════════════════
+
+All emails HTML: #080709 header bar, 4px gold top border, 
+white body, "Atera Stays" in header (text, no image in email),
+clean professional layout
+
+GUEST ENQUIRY CONFIRMATION:
+Subject: "Enquiry received — Atera Stays"
+Body: Hi [name], thank you for your enquiry. We are checking 
+availability and will be in touch within a few hours. 
+No payment has been taken. — Atera Stays
+
+LANDLORD ENQUIRY CONFIRMATION:
+Subject: "Thank you for your enquiry — Atera Stays"
+Body: Hi [name], thank you for reaching out. A member of our team 
+will call you shortly to discuss your property and options. — Atera Stays
+
+INTERNAL ALERT:
+Subject: "NEW [TYPE] ENQUIRY — [name]"
+Body: Clean table of all submitted fields + timestamp
+
+═══════════════════════════════════════════════════════════
+ENVIRONMENT VARIABLES
+═══════════════════════════════════════════════════════════
+
+Server-side (Replit Secrets):
+SUPABASE_URL
+SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+RESEND_API_KEY
+STRIPE_SECRET_KEY
+INTERNAL_EMAIL
+
+Client-side (prefix VITE_ for Vite):
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+VITE_STRIPE_PUBLIC_KEY
+
+═══════════════════════════════════════════════════════════
+ERROR HANDLING
+═══════════════════════════════════════════════════════════
+
+React Error Boundaries:
+  Wrap hub pages in error boundary
+  Fallback UI: "Something went wrong. Refresh to continue."
+  Log error details to console (development only)
+
+All async functions: try/catch with user-facing error messages
+Network errors: "Connection issue. Please try again."
+Auth errors: specific messages ("Invalid credentials", etc.)
+Form errors: field-level, shown inline below each field
+Success states: always confirmed visually before moving on
+
+═══════════════════════════════════════════════════════════
+PERFORMANCE
+═══════════════════════════════════════════════════════════
+
+React.lazy + Suspense for route-level code splitting
+Images: lazy loading with loading="lazy" attribute
+Supabase queries: select only needed columns, never select *
+Re-renders: useCallback/useMemo where appropriate
+Bundle: no unnecessary dependencies
+
+═══════════════════════════════════════════════════════════
+SECURITY
+═══════════════════════════════════════════════════════════
+
+Never expose SUPABASE_SERVICE_ROLE_KEY to frontend
+Use SUPABASE_ANON_KEY on frontend only
+RLS enforces data access — anon cannot read private data
+express-rate-limit on /api/enquiry
+Input sanitisation on all form fields before DB insert
+HTTPS only (Replit provides this automatically)
+No user-supplied data rendered as raw HTML (prevent XSS)
+
+═══════════════════════════════════════════════════════════
+ABSOLUTE FINAL REQUIREMENTS — NON-NEGOTIABLE
+═══════════════════════════════════════════════════════════
+
+1.  Zero emoji anywhere. Lucide React SVG icons only.
+2.  Zero placeholder TODO comments in final code.
+3.  Zero console.log in production builds.
+4.  Zero hardcoded secrets — all via environment variables.
+5.  Logo: /public/atera-logo.png — transparent PNG — used as 
+    <img> everywhere. No background behind it. Never as text.
+6.  Brand: "ATERA Stays" in all public-facing UI.
+    "ATERA INDUSTRIES LTD" in legal text, contracts, and footer only.
+7.  Hub content area = full available width on every screen size.
+    No max-width cap on the main content zone. Ever.
+8.  Sidebar = 240px labels+icons desktop / 64px icons tablet / 
+    hidden with hamburger on mobile. Fully functional on all sizes.
+9.  All forms: loading → success → error states implemented.
+10. All async operations: loading indicator shown.
+11. PDF contracts: white background, black text, gold ONLY for 
+    section header fills and clause number text. 
+    Looks like a premium law firm document.
+12. Landing page: Apple product page storytelling. 
+    One message per section. Scroll reveals. Cinematic spacing.
+13. Hub: iOS-level clarity. New user understands any screen in 
+    10 seconds. Primary action always obvious.
+14. prefers-reduced-motion: all animations disabled when set.
+15. Session auto-logout after 30 minutes hub inactivity.
+16. Privacy Policy, Terms, and 404 pages built and linked.
+17. Cookie consent banner implemented.
+18. SEO meta tags on all pages.
+19. Favicon set to /atera-logo.png.
+20. The finished platform must be indistinguishable from a 
+    product a funded startup spent £150,000 building. 
+    Build it to that standard. No shortcuts.
