@@ -27,9 +27,9 @@ export function Landing() {
       {/* ── Navbar ─────────────────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 h-[52px] bg-black/70 backdrop-blur-[20px] border-b border-[#1d1d1f] flex items-center justify-between px-8">
         <img
-          src="/__mockup/images/atera-logo.svg"
+          src="/__mockup/images/atera-logo.png"
           alt="Atera Stays"
-          className="h-7 w-7"
+          className="h-9 w-auto"
         />
         <div className="hidden md:flex items-center gap-8 text-[13px] font-medium text-[#a1a1a6]">
           <a href="#landlords" className="hover:text-white transition-colors duration-200">Landlords</a>
