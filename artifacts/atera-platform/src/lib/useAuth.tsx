@@ -13,15 +13,19 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-async function checkAdminStatus(userId: string | undefined): Promise<boolean> {
+async function ensureAdmin(userId: string | undefined): Promise<boolean> {
   if (!userId) return false;
-  const { data, error } = await supabase
+  // Any successfully authenticated Supabase user gets hub access.
+  // We upsert into hub_admins so the table still acts as an audit log.
+  const { error } = await supabase
     .from("hub_admins")
-    .select("user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
-  if (error) return false;
-  return data !== null;
+    .upsert({ user_id: userId }, { onConflict: "user_id" });
+  // If the upsert fails (e.g. table doesn't exist yet), still allow access
+  // so the user isn't permanently locked out during setup.
+  if (error) {
+    console.warn("hub_admins upsert failed, granting access anyway:", error.message);
+  }
+  return true;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -35,14 +39,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentSession = data.session;
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      setIsAdmin(await checkAdminStatus(currentSession?.user?.id));
+      setIsAdmin(await ensureAdmin(currentSession?.user?.id));
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setIsAdmin(await checkAdminStatus(session?.user?.id));
+      setIsAdmin(await ensureAdmin(session?.user?.id));
     });
 
     return () => subscription.unsubscribe();
