@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
-import { useState } from "react";
 import { GuestEnquiryModal } from "@/components/modals/GuestEnquiryModal";
 import { LandlordEnquiryModal } from "@/components/modals/LandlordEnquiryModal";
 
@@ -8,69 +8,107 @@ export function Privacy() {
   const [guestModalOpen, setGuestModalOpen] = useState(false);
   const [landlordModalOpen, setLandlordModalOpen] = useState(false);
 
+  const sections = [
+    {
+      title: "1. Data We Collect",
+      content: (
+        <ul className="flex flex-col gap-2 text-[#6e6e73] text-[15px] leading-relaxed list-none">
+          {[
+            "Identity Data: Name, date of birth, copies of ID.",
+            "Contact Data: Email address, telephone numbers, billing address.",
+            "Financial Data: Bank account details (for rent remittances).",
+            "Property Data: Property addresses, ownership documents, compliance certificates.",
+          ].map((item, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6e6e73] shrink-0" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      )
+    },
+    {
+      title: "2. How We Use It",
+      content: (
+        <ul className="flex flex-col gap-2 text-[#6e6e73] text-[15px] leading-relaxed list-none">
+          {[
+            "To register you as a new client or guest.",
+            "To process and deliver your booking or property management agreement.",
+            "To manage payments, fees and charges.",
+            "To notify you about changes to our terms or privacy policy.",
+          ].map((item, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6e6e73] shrink-0" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      )
+    },
+    {
+      title: "3. Your Rights (GDPR)",
+      content: (
+        <ul className="flex flex-col gap-2 text-[#6e6e73] text-[15px] leading-relaxed list-none">
+          {[
+            "Right of access — You can request copies of your personal information.",
+            "Right to rectification — You can ask us to correct inaccurate data.",
+            "Right to erasure — You can request deletion of your data in certain circumstances.",
+            "Right to restrict processing — You can ask us to limit how we use your data.",
+          ].map((item, i) => (
+            <li key={i} className="flex items-start gap-3">
+              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6e6e73] shrink-0" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      )
+    },
+    {
+      title: "4. Cookies",
+      content: (
+        <p className="text-[#6e6e73] text-[15px] leading-relaxed">
+          Our website uses cookies to distinguish you from other users and improve your experience. You can accept or decline non-essential cookies via the banner shown on your first visit.
+        </p>
+      )
+    },
+    {
+      title: "5. Contact",
+      content: (
+        <p className="text-[#6e6e73] text-[15px] leading-relaxed">
+          ATERA INDUSTRIES LTD — Registered in England &amp; Wales.<br />
+          For any questions about this Privacy Policy, please contact us at{" "}
+          <a href="mailto:info@aterastays.com" className="text-white hover:underline">info@aterastays.com</a>.
+        </p>
+      )
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-black flex flex-col">
-      <Navbar 
-        onBookStay={() => setGuestModalOpen(true)} 
-        onLandlord={() => setLandlordModalOpen(true)} 
-      />
-      
-      <main className="flex-grow pt-32 pb-24 px-6 max-w-3xl mx-auto w-full text-off-white font-light text-[15px] leading-relaxed">
-        <h1 className="font-display text-4xl md:text-5xl text-gold text-center mb-4">Privacy Policy</h1>
-        <p className="text-center text-grey-1 mb-16 text-sm">Last updated: 1 January 2025</p>
+      <Navbar onBookStay={() => setGuestModalOpen(true)} onLandlord={() => setLandlordModalOpen(true)} />
 
-        <div className="space-y-12">
-          <section>
-            <h2 className="font-display text-2xl text-off-white mb-4 pb-2 border-b border-[rgba(201,168,76,0.15)]">1. Data We Collect</h2>
-            <p className="mb-4">We collect personal data to provide our services, including:</p>
-            <ul className="list-disc pl-5 space-y-2 text-grey-1">
-              <li>Identity Data: Name, date of birth, copies of ID.</li>
-              <li>Contact Data: Email address, telephone numbers, billing address.</li>
-              <li>Financial Data: Bank account details (for rent remittances), payment card details.</li>
-              <li>Property Data: Property addresses, ownership documents, compliance certificates.</li>
-            </ul>
-          </section>
+      <main className="flex-grow pt-28 pb-32 px-6">
+        <div className="max-w-[720px] mx-auto">
+          <div className="mb-16">
+            <p className="text-[11px] font-semibold tracking-[0.14em] text-[#6e6e73] uppercase mb-4">Legal</p>
+            <h1 className="text-[48px] md:text-[56px] font-bold tracking-[-0.03em] text-white leading-[1.05] mb-4">
+              Privacy Policy
+            </h1>
+            <p className="text-[#6e6e73] text-[15px]">Last updated: 1 January 2025</p>
+          </div>
 
-          <section>
-            <h2 className="font-display text-2xl text-off-white mb-4 pb-2 border-b border-[rgba(201,168,76,0.15)]">2. How We Use It</h2>
-            <p className="mb-4">We use your personal data exclusively for the following purposes:</p>
-            <ul className="list-disc pl-5 space-y-2 text-grey-1">
-              <li>To register you as a new client or guest.</li>
-              <li>To process and deliver your booking or property management agreement.</li>
-              <li>To manage payments, fees and charges.</li>
-              <li>To notify you about changes to our terms or privacy policy.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="font-display text-2xl text-off-white mb-4 pb-2 border-b border-[rgba(201,168,76,0.15)]">3. Your Rights (GDPR)</h2>
-            <p className="mb-4">Under data protection laws, you have rights including:</p>
-            <ul className="list-disc pl-5 space-y-2 text-grey-1">
-              <li>Your right of access - You have the right to ask us for copies of your personal information.</li>
-              <li>Your right to rectification - You have the right to ask us to rectify personal information you think is inaccurate.</li>
-              <li>Your right to erasure - You have the right to ask us to erase your personal information in certain circumstances.</li>
-              <li>Your right to restriction of processing - You have the right to ask us to restrict the processing of your personal information in certain circumstances.</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="font-display text-2xl text-off-white mb-4 pb-2 border-b border-[rgba(201,168,76,0.15)]">4. Cookies</h2>
-            <p className="text-grey-1">Our website uses cookies to distinguish you from other users of our website. This helps us to provide you with a good experience when you browse our website and also allows us to improve our site.</p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-2xl text-off-white mb-4 pb-2 border-b border-[rgba(201,168,76,0.15)]">5. Contact</h2>
-            <p className="text-grey-1">
-              ATERA INDUSTRIES LTD<br/>
-              ICO Registration Number: ZA123456 (Placeholder)<br/>
-              If you have any questions about this privacy policy, please contact us.
-            </p>
-          </section>
+          <div className="flex flex-col gap-0">
+            {sections.map(({ title, content }, i) => (
+              <div key={i} className="py-10 border-t border-[#1d1d1f]">
+                <h2 className="text-[20px] font-semibold text-white tracking-tight mb-4">{title}</h2>
+                {content}
+              </div>
+            ))}
+          </div>
         </div>
       </main>
 
       <Footer />
-      
       <GuestEnquiryModal open={guestModalOpen} onClose={() => setGuestModalOpen(false)} />
       <LandlordEnquiryModal open={landlordModalOpen} onClose={() => setLandlordModalOpen(false)} />
     </div>
