@@ -21,12 +21,16 @@ tags:
   - name: dashboard
     description: Dashboard summaries
 
+security:
+  - bearerAuth: []
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
+      security: []
       responses:
         "200":
           description: Healthy
@@ -477,6 +481,15 @@ paths:
                 $ref: "#/components/schemas/TicketStats"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >
+        Supabase-issued JWT. The token must belong to a user with
+        `app_metadata.role` of `admin` or `staff`.
+
   schemas:
     HealthStatus:
       type: object

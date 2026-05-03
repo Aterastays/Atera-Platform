@@ -1,6 +1,16 @@
 import app from "./app";
 import { logger } from "./lib/logger";
 
+const missingVars = (["SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"] as const).filter(
+  (v) => !process.env[v],
+);
+if (missingVars.length > 0) {
+  throw new Error(
+    `Missing required environment variables for auth: ${missingVars.join(", ")}. ` +
+      "The management API cannot start without a Supabase auth configuration.",
+  );
+}
+
 const rawPort = process.env["PORT"];
 
 if (!rawPort) {

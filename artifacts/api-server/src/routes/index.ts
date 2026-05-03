@@ -7,12 +7,16 @@ import ticketsRouter from "./tickets";
 import dashboardRouter from "./dashboard";
 import enquiryRouter from "./enquiry";
 import publicPropertiesRouter from "./publicProperties";
+import { requireAuth } from "../middlewares/requireAuth";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
 router.use(enquiryRouter);
 router.use(publicPropertiesRouter);
+
+router.use(requireAuth);
+
 router.use(customersRouter);
 router.use(devicesRouter);
 router.use(alertsRouter);
