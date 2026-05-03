@@ -56,7 +56,7 @@ export function GuestEnquiryModal({ open, onClose }: GuestEnquiryModalProps) {
   }, [open, onClose]);
 
   const fetchProperties = async () => {
-    const { data } = await supabase.from("properties").select("id, name").eq("status", "live");
+    const { data } = await supabase.from("public_properties").select("id, name");
     if (data) setProperties(data);
   };
 

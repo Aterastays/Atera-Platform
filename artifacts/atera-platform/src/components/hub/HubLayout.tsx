@@ -9,17 +9,39 @@ interface HubLayoutProps {
 }
 
 export function HubLayout({ children }: HubLayoutProps) {
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
   const [, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (loading) {
-    return <div className="min-h-screen bg-black flex items-center justify-center"><div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin"></div></div>;
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   if (!user) {
     setLocation("/hub/login");
     return null;
+  }
+
+  if (!isAdmin) {
+    const handleSignOut = async () => {
+      await signOut();
+      setLocation("/hub/login");
+    };
+
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center flex-col gap-4 text-center px-6">
+        <p className="text-grey-1 text-sm max-w-xs">
+          Your account does not have access to the Hub. Please contact the administrator.
+        </p>
+        <button className="btn-outline text-sm" onClick={handleSignOut}>
+          Sign Out
+        </button>
+      </div>
+    );
   }
 
   return (

@@ -9,10 +9,9 @@ export function PropertiesSection({ onBookStay }: { onBookStay: () => void }) {
   useEffect(() => {
     async function fetchProperties() {
       const { data } = await supabase
-        .from("properties")
-        .select("*")
-        .eq("status", "live")
-        .order("created_at", { ascending: false })
+        .from("public_properties")
+        .select("id, name, postcode, beds, photos")
+        .order("id", { ascending: false })
         .limit(3);
       if (data) setProperties(data);
       setLoading(false);
@@ -64,9 +63,6 @@ export function PropertiesSection({ onBookStay }: { onBookStay: () => void }) {
                     <div className="flex items-center gap-1 text-grey-1 text-sm"><BedDouble className="w-4 h-4" /> {p.beds}</div>
                   </div>
                   <h3 className="font-body text-lg text-off-white font-medium mb-4">{p.name}</h3>
-                  <div className="font-display text-[28px] text-gold leading-none">
-                    £{p.nightly_rate} <span className="font-body text-xs text-grey-1 tracking-normal font-normal">/night</span>
-                  </div>
                 </div>
               </div>
             ))
@@ -83,9 +79,6 @@ export function PropertiesSection({ onBookStay }: { onBookStay: () => void }) {
                     <div className="flex items-center gap-1 text-grey-1 text-sm"><BedDouble className="w-4 h-4" /> —</div>
                   </div>
                   <h3 className="font-body text-lg text-off-white font-medium mb-4">Premium Property</h3>
-                  <div className="font-display text-[28px] text-gold leading-none">
-                    TBC <span className="font-body text-xs text-grey-1 tracking-normal font-normal">/night</span>
-                  </div>
                 </div>
               </div>
             ))

@@ -109,6 +109,12 @@ create table if not exists kpis (
   created_at timestamptz default now()
 );
 
+-- Hub admins: only users listed here may access Hub data
+create table if not exists hub_admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz default now()
+);
+
 -- ═══════════════════════════════════════
 -- ROW LEVEL SECURITY
 -- ═══════════════════════════════════════
@@ -119,17 +125,147 @@ alter table bookings enable row level security;
 alter table enquiries enable row level security;
 alter table tasks enable row level security;
 alter table kpis enable row level security;
+alter table hub_admins enable row level security;
 
--- Authenticated users: full access to everything
-create policy "authenticated_all_properties" on properties for all to authenticated using (true) with check (true);
-create policy "authenticated_all_leads" on leads for all to authenticated using (true) with check (true);
-create policy "authenticated_all_bookings" on bookings for all to authenticated using (true) with check (true);
-create policy "authenticated_all_enquiries" on enquiries for all to authenticated using (true) with check (true);
-create policy "authenticated_all_tasks" on tasks for all to authenticated using (true) with check (true);
-create policy "authenticated_all_kpis" on kpis for all to authenticated using (true) with check (true);
+-- ───────────────────────────────────────
+-- Remove previously overbroad policies (idempotent: safe to run on an
+-- existing database that already has these names).
+-- ───────────────────────────────────────
+drop policy if exists "authenticated_all_properties" on properties;
+drop policy if exists "authenticated_all_leads" on leads;
+drop policy if exists "authenticated_all_bookings" on bookings;
+drop policy if exists "authenticated_all_enquiries" on enquiries;
+drop policy if exists "authenticated_all_tasks" on tasks;
+drop policy if exists "authenticated_all_kpis" on kpis;
 
--- Anonymous: INSERT only on enquiries
-create policy "anon_insert_enquiries" on enquiries for insert to anon with check (true);
+-- Remove the old anon row policy that allowed direct access to the
+-- full properties table (column restriction is now enforced by the view).
+drop policy if exists "anon_select_live_stays" on properties;
 
--- Anonymous: SELECT only on live stays properties (public listing)
-create policy "anon_select_live_stays" on properties for select to anon using (status = 'live' and service_type = 'stays');
+-- ───────────────────────────────────────
+-- Admin helper function
+-- security definer: runs as the function owner so it can always read
+-- hub_admins regardless of the caller's own RLS privileges.
+-- search_path is pinned to prevent search-path-based name hijacking.
+-- ───────────────────────────────────────
+create or replace function is_hub_admin()
+returns boolean
+language sql
+security definer
+stable
+set search_path = public
+as $$
+  select exists (
+    select 1 from hub_admins where user_id = auth.uid()
+  )
+$$;
+
+-- ───────────────────────────────────────
+-- Hub tables: only hub admins may read or write
+-- ───────────────────────────────────────
+drop policy if exists "hub_admin_all_properties" on properties;
+create policy "hub_admin_all_properties" on properties
+  for all to authenticated
+  using (is_hub_admin())
+  with check (is_hub_admin());
+
+drop policy if exists "hub_admin_all_leads" on leads;
+create policy "hub_admin_all_leads" on leads
+  for all to authenticated
+  using (is_hub_admin())
+  with check (is_hub_admin());
+
+drop policy if exists "hub_admin_all_bookings" on bookings;
+create policy "hub_admin_all_bookings" on bookings
+  for all to authenticated
+  using (is_hub_admin())
+  with check (is_hub_admin());
+
+drop policy if exists "hub_admin_all_enquiries" on enquiries;
+create policy "hub_admin_all_enquiries" on enquiries
+  for all to authenticated
+  using (is_hub_admin())
+  with check (is_hub_admin());
+
+drop policy if exists "hub_admin_all_tasks" on tasks;
+create policy "hub_admin_all_tasks" on tasks
+  for all to authenticated
+  using (is_hub_admin())
+  with check (is_hub_admin());
+
+drop policy if exists "hub_admin_all_kpis" on kpis;
+create policy "hub_admin_all_kpis" on kpis
+  for all to authenticated
+  using (is_hub_admin())
+  with check (is_hub_admin());
+
+-- hub_admins table: admins can read their own row; no self-modification
+drop policy if exists "hub_admins_self_read" on hub_admins;
+create policy "hub_admins_self_read" on hub_admins
+  for select to authenticated
+  using (user_id = auth.uid());
+
+-- ───────────────────────────────────────
+-- Anonymous: INSERT only on enquiries (public contact form)
+-- ───────────────────────────────────────
+drop policy if exists "anon_insert_enquiries" on enquiries;
+create policy "anon_insert_enquiries" on enquiries
+  for insert to anon
+  with check (true);
+
+-- ───────────────────────────────────────
+-- Public properties view — intentionally limited column set
+--
+-- Columns included are those displayed on the public marketing site:
+--   id        — needed to reference a property in the enquiry form
+--   name      — displayed as the listing title
+--   postcode  — displayed as the area/location label (not full address)
+--   beds      — displayed in the listing card
+--   photos    — only public marketing photos uploaded by admins
+--   service_type / status — used in the WHERE filter, safe to expose
+--
+-- Columns deliberately excluded (internal business data):
+--   address, monthly_revenue, occupancy_rate, cleaning_costs,
+--   notes, landlord_id, created_at
+--
+-- Anonymous users query this view exclusively; they never have an RLS
+-- policy on the underlying properties table, so they cannot bypass the
+-- column allowlist by querying the table directly.
+-- ───────────────────────────────────────
+drop view if exists public_properties;
+create view public_properties
+  with (security_invoker = false)
+as
+  select
+    id,
+    name,
+    postcode,
+    beds,
+    service_type,
+    status,
+    photos
+  from properties
+  where status = 'live'
+    and service_type = 'stays';
+
+-- Grant SELECT to both anon and authenticated roles.
+-- The public listing is visible whether or not the visitor is signed in;
+-- authenticated sessions use the `authenticated` Postgres role, so they
+-- would otherwise be unable to load public property cards unless they
+-- happen to be hub admins (who have direct table access via RLS).
+grant select on public_properties to anon;
+grant select on public_properties to authenticated;
+
+-- ───────────────────────────────────────
+-- BOOTSTRAP: first-time admin setup
+-- After running this script, insert the Supabase user ID of each Hub
+-- administrator into hub_admins using the service role or the Supabase
+-- dashboard Table Editor (service role bypasses RLS):
+--
+--   insert into hub_admins (user_id) values ('<your-auth-user-uuid>');
+--
+-- You can find user UUIDs in Authentication → Users in the Supabase
+-- dashboard. At least one admin must be bootstrapped before any Hub
+-- login will succeed, because the new RLS policies deny all Hub table
+-- access to non-admin authenticated users.
+-- ───────────────────────────────────────
