@@ -11,7 +11,7 @@ export function Hero({ onBookStay, onLandlord }: HeroProps) {
   useEffect(() => {
     const els = containerRef.current?.querySelectorAll("[data-hero]") ?? [];
     els.forEach((el, i) => {
-      (el as HTMLElement).style.transitionDelay = `${i * 80}ms`;
+      (el as HTMLElement).style.transitionDelay = `${i * 90}ms`;
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           (el as HTMLElement).classList.add("hero-in");
@@ -27,27 +27,30 @@ export function Hero({ onBookStay, onLandlord }: HeroProps) {
         alt="Luxury serviced apartment"
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/55 to-black/45 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/50 to-black/45 pointer-events-none" />
 
       <div ref={containerRef} className="relative z-10 flex flex-col items-center text-center px-6 w-full max-w-4xl">
         <p
           data-hero
-          className="hero-item text-[11px] font-semibold tracking-[0.18em] uppercase text-[#a1a1a6] mb-5"
+          className="hero-item text-[11px] font-semibold tracking-[0.18em] uppercase text-[#a1a1a6] mb-6"
         >
           Atera Stays
         </p>
+
         <h1
           data-hero
-          className="hero-item text-[56px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.0] text-white"
+          className="hero-item text-white mb-8"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontSize: "clamp(52px, 8vw, 96px)",
+            fontWeight: 400,
+            lineHeight: 1.02,
+            letterSpacing: "-0.01em",
+          }}
         >
-          Premium Stays.
+          Premium Stays.<br />Proven Management.
         </h1>
-        <h1
-          data-hero
-          className="hero-item text-[56px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.0] text-white mb-7"
-        >
-          Proven Management.
-        </h1>
+
         <p
           data-hero
           className="hero-item text-[16px] text-[#c7c7cc] max-w-md mx-auto font-normal leading-[1.7] mb-10"
@@ -56,6 +59,7 @@ export function Hero({ onBookStay, onLandlord }: HeroProps) {
           <br />
           Premium serviced accommodation for corporate guests.
         </p>
+
         <div data-hero className="hero-item flex flex-col sm:flex-row items-center gap-3">
           <button
             onClick={onLandlord}

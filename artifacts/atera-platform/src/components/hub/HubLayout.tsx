@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
+import { Redirect } from "wouter";
 import { useAuth } from "@/lib/useAuth";
-import { useLocation } from "wouter";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 
@@ -9,30 +9,30 @@ interface HubLayoutProps {
 }
 
 export function HubLayout({ children }: HubLayoutProps) {
-  const { user, loading, signOut } = useAuth();
-  const [, setLocation] = useLocation();
+  const { user, loading, isAdmin, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // If a session exists but the user is not a hub admin, sign them out in the background.
+  // The render-time <Redirect> below handles navigation immediately.
   useEffect(() => {
-    if (!loading && !user) {
-      setLocation("/hub/login");
+    if (!loading && user && !isAdmin) {
+      signOut();
     }
-  }, [loading, user, setLocation]);
+  }, [loading, user, isAdmin, signOut]);
 
+  // Show spinner while session / admin status is resolving
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
       </div>
     );
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-      </div>
-    );
+  // Not authenticated or not a hub admin — redirect immediately at render time
+  // (using wouter's Redirect which fires via useIsomorphicLayoutEffect, before paint)
+  if (!user || !isAdmin) {
+    return <Redirect to="/hub/login" />;
   }
 
   return (

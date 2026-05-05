@@ -21,7 +21,19 @@ export function HowItWorks() {
     <section id="how-it-works" className="bg-white text-black py-32">
       <div className="max-w-[1100px] mx-auto px-6">
         <div className="reveal text-center mb-24">
-          <h2 className="text-[52px] font-bold tracking-[-0.03em] mb-4">How it works.</h2>
+          <h2
+            className="mb-4"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "clamp(40px, 6vw, 64px)",
+              fontWeight: 400,
+              lineHeight: 1.02,
+              letterSpacing: "-0.01em",
+              color: "#111111",
+            }}
+          >
+            How it works.
+          </h2>
           <p className="text-[19px] text-[#6e6e73] font-normal">Simple, transparent, and completely hands-off.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-10">

@@ -36,7 +36,7 @@ function App() {
               <Route path="/terms" component={Terms} />
               <Route path="/hub/login" component={HubLogin} />
               <Route path="/hub/reset-password" component={HubResetPassword} />
-              <Route path="/hub*">
+              <Route path="/hub/:page?">
                 <HubLayout>
                   <Switch>
                     <Route path="/hub/dashboard">

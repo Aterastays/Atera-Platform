@@ -10,10 +10,20 @@ export function ServicesSection({ onLandlord, onBookStay }: ServicesProps) {
       <section id="landlords" className="bg-[#f5f5f7] text-black py-32 overflow-hidden">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row items-center gap-20">
           <div className="reveal w-full md:w-[42%] flex flex-col items-start">
-            <span className="text-[11px] font-bold tracking-[0.14em] text-[#6e6e73] uppercase mb-5 px-3 py-1 border border-[#c7c7cc] rounded-[980px]">
+            <span className="text-[11px] font-semibold tracking-[0.18em] text-[#6e6e73] uppercase mb-5">
               For Landlords
             </span>
-            <h2 className="text-[44px] font-bold tracking-[-0.03em] leading-[1.08] mb-6">
+            <h2
+              className="mb-6"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(36px, 5vw, 56px)",
+                fontWeight: 400,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                color: "#111111",
+              }}
+            >
               Total peace of mind.<br />Zero void periods.
             </h2>
             <p className="text-[17px] text-[#6e6e73] leading-[1.65] mb-8">
@@ -32,7 +42,7 @@ export function ServicesSection({ onLandlord, onBookStay }: ServicesProps) {
             <img
               src="/landlord-exterior.png"
               alt="Premium UK property"
-              className="w-full rounded-[20px]"
+              className="w-full"
             />
           </div>
         </div>
@@ -42,10 +52,20 @@ export function ServicesSection({ onLandlord, onBookStay }: ServicesProps) {
       <section id="guests" className="bg-black text-white py-32 overflow-hidden border-t border-[#1d1d1f]">
         <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-20">
           <div className="reveal w-full md:w-[42%] flex flex-col items-start">
-            <span className="text-[11px] font-bold tracking-[0.14em] text-[#6e6e73] uppercase mb-5 px-3 py-1 border border-[#3a3a3c] rounded-[980px]">
+            <span className="text-[11px] font-semibold tracking-[0.18em] text-[#6e6e73] uppercase mb-5">
               For Corporate Guests
             </span>
-            <h2 className="text-[44px] font-bold tracking-[-0.03em] leading-[1.08] mb-6">
+            <h2
+              className="mb-6"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(36px, 5vw, 56px)",
+                fontWeight: 400,
+                lineHeight: 1.05,
+                letterSpacing: "-0.01em",
+                color: "#ffffff",
+              }}
+            >
               A premium space to work, rest, and live.
             </h2>
             <p className="text-[17px] text-[#a1a1a6] leading-[1.65] mb-8">
@@ -64,7 +84,7 @@ export function ServicesSection({ onLandlord, onBookStay }: ServicesProps) {
             <img
               src="/guest-office.png"
               alt="Premium home office in serviced apartment"
-              className="w-full rounded-[20px]"
+              className="w-full"
             />
           </div>
         </div>

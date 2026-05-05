@@ -13,22 +13,52 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+async function fetchIsHubAdmin(uid: string): Promise<boolean> {
+  try {
+    const { data } = await supabase
+      .from("hub_admins")
+      .select("user_id")
+      .eq("user_id", uid)
+      .maybeSingle();
+    return data !== null;
+  } catch {
+    return false;
+  }
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminLoading, setAdminLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       const s = data.session;
       setSession(s);
       setUser(s?.user ?? null);
+      if (s?.user) {
+        setAdminLoading(true);
+        const admin = await fetchIsHubAdmin(s.user.id);
+        setIsAdmin(admin);
+        setAdminLoading(false);
+      }
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      if (s?.user) {
+        setAdminLoading(true);
+        const admin = await fetchIsHubAdmin(s.user.id);
+        setIsAdmin(admin);
+        setAdminLoading(false);
+      } else {
+        setIsAdmin(false);
+        setAdminLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -49,8 +79,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { error: error.message };
+
+    if (data.user) {
+      const admin = await fetchIsHubAdmin(data.user.id);
+      if (!admin) {
+        await supabase.auth.signOut();
+        return { error: "Access not permitted. Contact your administrator." };
+      }
+      setIsAdmin(true);
+    }
+
     return { error: null };
   }, []);
 
@@ -58,11 +98,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   }, []);
 
-  // isAdmin === any authenticated Supabase user
-  const isAdmin = user !== null;
+  const combinedLoading = loading || adminLoading;
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading: combinedLoading, isAdmin, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
