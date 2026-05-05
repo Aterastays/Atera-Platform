@@ -1,43 +1,68 @@
-export function HowItWorks() {
-  const steps = [
-    {
-      n: "01",
-      title: "Property Valuation",
-      body: "We view your property and provide a guaranteed rent offer within 24 hours. No hidden fees, no obligation.",
-    },
-    {
-      n: "02",
-      title: "Sign Agreement",
-      body: "We sign a 3–5 year company let agreement, becoming your sole tenant and taking on all management.",
-    },
-    {
-      n: "03",
-      title: "Receive Rent",
-      body: "Fixed rent hits your account on the same day every month — regardless of occupancy.",
-    },
-  ];
+const GUEST_STEPS = [
+  { n: "01", title: "Browse", body: "Explore our available properties" },
+  { n: "02", title: "Enquire", body: "Submit a quick booking request" },
+  { n: "03", title: "Confirm", body: "We reply within hours with pricing" },
+  { n: "04", title: "Arrive", body: "Step into a professionally managed home" },
+];
 
+const LANDLORD_STEPS = [
+  { n: "01", title: "Enquire", body: "Tell us about your property" },
+  { n: "02", title: "Consult", body: "Quick call to discuss your options" },
+  { n: "03", title: "Offer", body: "We present a tailored proposal" },
+  { n: "04", title: "Launch", body: "Agreement signed. Income starts." },
+];
+
+export function HowItWorks() {
   return (
-    <section id="how-it-works" className="bg-white text-black py-32">
-      <div className="max-w-[1100px] mx-auto px-6">
-        <div className="reveal text-center mb-24">
-          <h2 className="text-[52px] font-bold tracking-[-0.03em] mb-4">How it works.</h2>
-          <p className="text-[19px] text-[#6e6e73] font-normal">Simple, transparent, and completely hands-off.</p>
+    <section id="how-it-works" style={{ background: "#0D0C0F", padding: "128px 0" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 32px" }}>
+
+        <div className="reveal" style={{ textAlign: "center", marginBottom: 80 }}>
+          <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(36px, 5vw, 64px)", fontWeight: 400, color: "#E8E2D8", margin: "0 0 16px", lineHeight: 1.05 }}>
+            Simple from start to stay.
+          </h2>
         </div>
-        <div className="grid md:grid-cols-3 gap-10">
-          {steps.map(({ n, title, body }, i) => (
-            <div
-              key={n}
-              className="reveal flex flex-col items-center text-center"
-              style={{ transitionDelay: `${(i + 1) * 120}ms` }}
-            >
-              <div className="text-[100px] font-bold text-[#f5f5f7] tracking-tighter leading-none mb-3 select-none">
-                {n}
-              </div>
-              <h3 className="text-[22px] font-bold tracking-tight mb-3">{title}</h3>
-              <p className="text-[15px] text-[#6e6e73] leading-relaxed">{body}</p>
+
+        <div className="grid md:grid-cols-2 gap-16 md:gap-24">
+          {/* Guests */}
+          <div>
+            <div className="reveal" style={{ marginBottom: 40 }}>
+              <div className="label-style" style={{ color: "#C9A84C" }}>For Guests</div>
             </div>
-          ))}
+            <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
+              {GUEST_STEPS.map(({ n, title, body }, i) => (
+                <div key={n} className="reveal" style={{ transitionDelay: `${i * 120}ms`, display: "flex", gap: 24, alignItems: "flex-start" }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontSize: 52, fontWeight: 300, color: "rgba(201,168,76,0.12)", lineHeight: 1, minWidth: 56 }}>
+                    {n}
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 500, color: "#E8E2D8", marginBottom: 6 }}>{title}</div>
+                    <div style={{ fontFamily: "var(--font-body)", fontSize: 14, fontWeight: 300, color: "#8C8880", lineHeight: 1.65 }}>{body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Landlords */}
+          <div>
+            <div className="reveal" style={{ marginBottom: 40 }}>
+              <div className="label-style" style={{ color: "#C9A84C" }}>For Landlords</div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 36 }}>
+              {LANDLORD_STEPS.map(({ n, title, body }, i) => (
+                <div key={n} className="reveal" style={{ transitionDelay: `${i * 120}ms`, display: "flex", gap: 24, alignItems: "flex-start" }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontSize: 52, fontWeight: 300, color: "rgba(201,168,76,0.12)", lineHeight: 1, minWidth: 56 }}>
+                    {n}
+                  </div>
+                  <div>
+                    <div style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 500, color: "#E8E2D8", marginBottom: 6 }}>{title}</div>
+                    <div style={{ fontFamily: "var(--font-body)", fontSize: 14, fontWeight: 300, color: "#8C8880", lineHeight: 1.65 }}>{body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

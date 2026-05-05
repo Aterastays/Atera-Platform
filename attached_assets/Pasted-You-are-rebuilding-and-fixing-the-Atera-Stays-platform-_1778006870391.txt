@@ -1,0 +1,429 @@
+You are rebuilding and fixing the Atera Stays platform. 
+There are critical bugs and design inconsistencies that must 
+all be resolved in this single task. Do not cut corners. 
+Every fix must be complete and production-ready.
+
+═══════════════════════════════════════════════════════════
+CRITICAL BUG FIXES — DO THESE FIRST
+═══════════════════════════════════════════════════════════
+
+FIX 1 — AUTHENTICATION COMPLETELY BROKEN
+
+The hub login at /hub/login does not work. It spins forever 
+and never proceeds. Password reset emails do not work either.
+
+Fix the entire authentication system:
+
+- Use Supabase Auth signInWithPassword(email, password)
+- Show clear error message if credentials are wrong
+- On success redirect immediately to /hub/dashboard
+- Password reset: use Supabase Auth resetPasswordForEmail()
+  with redirectTo pointing to /hub/reset-password
+- Build /hub/reset-password page that accepts the token 
+  from the email link and allows user to set a new password
+  using Supabase Auth updateUser()
+- Add "Forgot password?" link on login page
+- Session persistence: use Supabase onAuthStateChange to 
+  keep user logged in across page refreshes
+- Auto-logout after 30 minutes of inactivity
+- All /hub/* routes redirect to /hub/login if no session
+- Remove any dependency on hub_admins table — use only 
+  Supabase Auth for all authentication logic
+
+FIX 2 — ALL HUB PAGES THROW ERRORS
+
+Every page in the hub crashes when navigated to. Fix all 
+routing and page rendering so every single hub page loads 
+without errors:
+- Dashboard
+- Command Centre  
+- Properties (list + detail view)
+- Landlord CRM
+- Guest Bookings
+- Enquiry Inbox
+- Deal Analyser
+- Contracts
+- Scripts & Templates
+- Partner Onboarding
+- Settings & KPIs
+
+Add React Error Boundaries around every hub page component.
+Handle null/undefined Supabase data gracefully — show 
+skeleton loading states while data fetches, never crash.
+If Supabase returns an error, show a clean inline message 
+not a broken page.
+
+FIX 3 — ENQUIRY FORMS INCONSISTENT DESIGN
+
+The landlord and guest enquiry modal forms on the public 
+site use the old design and do not match the premium 
+aesthetic of the rest of the site. Rebuild both modals 
+to match the exact design system:
+
+- Background: #0D0C0F
+- Border: 1px solid rgba(201,168,76,0.2)
+- Sharp corners — no border-radius
+- Input fields: dark background, gold border on focus
+- Labels: 11px Inter 500 uppercase letter-spacing 0.15em grey
+- Submit button: full-width gold fill
+- Typography: Cormorant Garamond for headings, Inter for body
+- Backdrop: rgba(4,3,6,0.92) blur 12px
+- Open animation: scale(0.97) to scale(1) + opacity, 250ms
+- Every field validated inline with red border + error message
+- Loading state on submit button
+- Success screen: animated SVG checkmark, gold, with message
+- GDPR notice below submit button in micro text
+- Close on ESC, click outside, or X button
+
+═══════════════════════════════════════════════════════════
+LANDING PAGE — COMPLETE REDESIGN TO APPLE STANDARD
+═══════════════════════════════════════════════════════════
+
+The landing page must be completely rebuilt to feel like 
+an Apple product launch page. Not inspired by Apple — 
+indistinguishable from it in quality and execution.
+
+Study apple.com/iphone. This is the exact standard required.
+
+CORE PRINCIPLES:
+- Each section = one idea, communicated perfectly
+- Typography does the heavy lifting
+- Whitespace is intentional and generous  
+- Every element animates in as user scrolls to it
+- Dark and light sections alternate to create visual rhythm
+- The user is guided through a story, not reading a website
+- Nothing is cluttered. Nothing is rushed.
+- Every word earns its place.
+
+SCROLL ANIMATION SYSTEM:
+Use Intersection Observer API throughout.
+Every section's content starts invisible and animates in:
+- Headline: translateY(40px) to 0 + opacity 0 to 1, 700ms
+- Subtext: same, 150ms delayed
+- Cards/images: same, staggered 100ms each child
+- Easing: cubic-bezier(0.25, 0.1, 0.25, 1) throughout
+- Respect prefers-reduced-motion — disable all if set
+
+SECTION 1 — HERO (100vh, full screen)
+Dark background #080709
+CSS grain texture (SVG filter, opacity 0.03)
+Subtle gold radial glow at centre
+Gold corner brackets top-left and top-right (CSS only)
+
+Content centred, animates in sequentially on load:
+1. Logo image (/public/atera-logo.png, height 72px, centred)
+2. "ATERA Stays" — Cormorant Garamond 96px, gold, 
+   letter-spacing 0.3em, centred
+3. Thin gold rule 60px wide, centred
+4. "Premium Stays," then italic "Proven Management." 
+   — 52px Cormorant 300, white, line-height 1.05
+5. "Professionally managed short stays for guests. 
+   Guaranteed rent and full property management for 
+   landlords across England."
+   — 17px Inter 300, #8C8880, max-width 500px centred
+6. Two CTAs: "Book a Stay" (gold fill) | 
+   "I Have a Property" (gold outline)
+   Gap 16px, both large 56px height
+7. Animated scroll indicator: thin gold line pulses at bottom
+
+SECTION 2 — TRUST BAR
+Background #0D0C0F, gold borders top and bottom
+Five stats animate in with counter effect (count up from 0):
+"100%" Guaranteed Rent | "3–5yr" Agreements | 
+"£0" Void Risk | "24/7" Support | "1" Point of Contact
+Numbers: 48px Cormorant 600 gold
+Labels: 11px Inter 500 uppercase #8C8880
+
+SECTION 3 — DUAL AUDIENCE SPLIT
+Full viewport height section, dark background
+Large headline centred: "Who Are You?" 
+— Cormorant 64px white, fades in
+Subtext: "Two services. One standard of excellence."
+— Inter 300, grey
+
+Two large cards animate up from below, side by side:
+Stagger 150ms between them
+
+CARD A — FOR GUESTS:
+Top: thin gold rule
+"For Guests" — label gold uppercase
+"Find Your Perfect Stay" — Cormorant 36px white
+Body: "Professional, fully managed properties for corporate 
+travellers, contractors, and professionals. Designed for 
+extended stays with everything you need from day one."
+CTA: "Browse Properties" — gold outline, triggers scroll 
+to properties section
+
+CARD B — FOR LANDLORDS:
+Top: thin gold rule  
+"For Landlords" — label gold uppercase
+"Make Your Property Work" — Cormorant 36px white
+Body: "Two options. Both hands-off. Both guaranteed. 
+Let us take your property on a company let with guaranteed 
+monthly rent, or let us manage it fully on your behalf."
+CTA: "I Have a Property" — gold fill, opens landlord modal
+
+SECTION 4 — STAYS PARTNERSHIP (storytelling, cinematic)
+This section tells the story of the Stays service.
+Alternate dark/light subsections that snap on scroll.
+
+SUBSECTION A (dark, full width):
+Eyebrow: "STAYS PARTNERSHIP" — label gold
+Large headline: "Guaranteed rent. Every month. 
+Occupied or not." — Cormorant 64px white, max-width 700px
+Body appears below: "We become your company tenant. 
+We pay you a fixed rent on the same date every month, 
+regardless of whether the property is occupied. 
+No voids. No chasing. No uncertainty."
+Animate: headline fades in from bottom, body follows 200ms later
+
+SUBSECTION B (cream #F5F0E6, full width):
+Right-aligned text layout
+"What does that mean for you?" — Cormorant 48px #111
+Four benefit rows animate in one by one (200ms stagger):
+Each row: gold dash + bold benefit + brief explanation
+— Fixed income you can plan around
+— Zero management responsibilities  
+— Professional guests — corporate and contractors only
+— 3 to 5 year agreements with a break clause
+
+SUBSECTION C (dark):
+Centred, large
+"The permissions. Done properly." — Cormorant 48px white
+Body: "Every property goes through a full permissions 
+check before we proceed. Freeholder, mortgage lender, 
+insurer — all confirmed in writing. We never cut corners 
+and we never proceed without full compliance."
+This builds trust with cautious landlords.
+
+SUBSECTION D (cream):
+"What our landlords say" — Cormorant 48px #111
+Single featured testimonial, large quote marks, 
+Cormorant italic 24px #333:
+"The rent arrives on exactly the same date every month. 
+I have not had to deal with a single issue since signing."
+— David M., Landlord, Manchester
+
+SECTION 5 — PROPERTY MANAGEMENT (same cinematic approach)
+
+SUBSECTION A (dark):
+Eyebrow: "PROPERTY MANAGEMENT"
+Large headline: "Your property. Fully managed. 
+Nothing for you to do." — Cormorant 64px white
+Body: "Already renting your property? We manage everything 
+end to end. Tenants, rent collection, maintenance, 
+compliance, inspections. One monthly statement. 
+That is all you see."
+
+SUBSECTION B (cream):
+Six management services in animated grid (2x3):
+Each appears with a Lucide icon (gold, 24px) + title + 
+one-line description. Stagger 80ms each:
+Users — Tenant Management — "Find, reference, onboard"
+Pound — Rent Collection — "Collected and remitted monthly"  
+Search — Quarterly Inspections — "Photo reports every 3 months"
+Shield — Compliance — "Gas, EICR, alarms tracked"
+FileText — Monthly Reports — "Statements direct to you"
+Home — Deposit Handling — "Government-approved scheme"
+
+SUBSECTION C (dark):
+"What our landlords say" — second testimonial:
+"They explained everything clearly. I have complete 
+peace of mind that my property is being managed properly."
+— Patricia L., Landlord, Leeds
+
+SECTION 6 — HOW IT WORKS
+Background: #0D0C0F
+Headline: "Simple from start to stay." — Cormorant 64px white
+
+Two columns animate in simultaneously:
+
+LEFT — FOR GUESTS:
+"For Guests" — label gold
+Steps animate in one by one (300ms stagger):
+Each: large faded Cormorant number (opacity 0.12) + 
+      step title Inter 500 + brief description Inter 300
+
+01 Browse — "Explore our available properties"
+02 Enquire — "Submit a quick booking request"  
+03 Confirm — "We reply within hours with pricing"
+04 Arrive — "Step into a professionally managed home"
+
+RIGHT — FOR LANDLORDS:
+"For Landlords" — label gold
+01 Enquire — "Tell us about your property"
+02 Consult — "Quick call to discuss your options"
+03 Offer — "We present a tailored proposal"
+04 Launch — "Agreement signed. Income starts."
+
+SECTION 7 — PROPERTIES GRID
+Background: #080709
+"Available Now" eyebrow, "Our Properties" H1 Cormorant white
+Properties from Supabase (status=live, service_type=stays)
+
+Each card animates up on scroll with stagger:
+Photo (SVG gold building fallback if none)
+Property name, postcode, beds, estimated nightly rate
+"Coming Soon" overlay on book button (intentional, premium)
+
+If no live properties: 3 beautiful placeholder cards
+with "Coming Soon" treatment — not an empty state error
+
+SECTION 8 — FINAL CTA
+Full-screen gold section (#C9A84C)
+Large Cormorant headline black: "Ready to begin?"
+Two buttons: dark fill | dark outline
+This section should feel conclusive and confident
+
+FOOTER
+Dark, professional, linked to Privacy and Terms pages
+
+═══════════════════════════════════════════════════════════
+LANDLORD MODAL — COMPLETE REBUILD WITH STORYTELLING
+═══════════════════════════════════════════════════════════
+
+When "I Have a Property" is clicked, instead of a plain 
+form, create a premium multi-step experience:
+
+STEP 1 — SERVICE SELECTION (full modal, no form yet)
+Header: "Your Property. Our Expertise."
+Subtext: "Choose the service that fits your situation."
+
+Two large cards (full width, stacked, tap to select):
+
+CARD 1 — STAYS PARTNERSHIP:
+Gold accent top border
+"Stays Partnership" — Cormorant 28px white
+"Guaranteed monthly rent, regardless of occupancy."
+Three micro-bullets with checkmark icons:
+✓ Fixed income every month
+✓ We manage everything  
+✓ Corporate guests only
+"From £X per month" placeholder
+Select button: "Choose Stays Partnership"
+
+CARD 2 — PROPERTY MANAGEMENT:
+"Property Management" — Cormorant 28px white  
+"Professional management for an agreed monthly fee."
+Three micro-bullets:
+✓ Tenant sourcing and referencing
+✓ Rent collection handled
+✓ Full compliance tracked
+Select button: "Choose Property Management"
+
+STEP 2 — ANIMATED INFO BEFORE FORM
+After selecting a service, before showing the form,
+show a brief animated info sequence (3 slides, auto-advance 
+with manual skip option):
+
+For Stays Partnership:
+Slide 1: "We pay you. Every month." 
+  Large Cormorant text, fades in, holds 2 seconds
+Slide 2: "No voids. No tenants. No stress."
+  Same treatment
+Slide 3: "Ready to find out what your property is worth?"
+  CTA: "Yes, let's talk" advances to form
+
+For Management:
+Slide 1: "We handle everything."
+Slide 2: "You just receive your monthly statement."
+Slide 3: "Let us tell you what we can do for your property."
+  CTA: "Tell me more" advances to form
+
+Skip button always visible in corner.
+
+STEP 3 — ENQUIRY FORM
+Clean, premium, matching the design system:
+Stays form: Name, Phone, Email, Address, Beds, 
+  Current Rent, Tenanted, Available From, Notes
+Management form: Name, Phone, Email, Address, 
+  Beds, Current Situation, Goals
+
+Submit → Supabase + Resend emails → success screen
+
+SUCCESS SCREEN:
+Animated gold checkmark SVG (drawn in, 600ms)
+"We will be in touch shortly." — Cormorant 32px white
+"One of our team will call you to discuss your property 
+and options. This usually happens within a few hours."
+— Inter 300, grey
+
+═══════════════════════════════════════════════════════════
+GUEST BOOKING MODAL — PREMIUM REBUILD
+═══════════════════════════════════════════════════════════
+
+STEP 1 — PROPERTY SELECTION
+Show available properties as visual cards (not a dropdown):
+Each card: photo, name, location, beds, nightly rate
+User taps a card to select it (gold border on selected)
+"I'm flexible" option if no preference
+"Continue" button advances to form
+
+STEP 2 — BOOKING DETAILS FORM
+Name, Email, Phone
+Dates: calendar-style date picker if possible, 
+  else clean date inputs side by side
+Nights and total auto-calculate and display prominently
+  in gold Cormorant below dates
+Number of guests, type of stay
+Message (optional)
+
+STEP 3 — REVIEW & SUBMIT
+Summary card showing:
+Property selected (or flexible)
+Dates + nights + estimated total
+Guest name + contact
+"Confirm Enquiry" gold button
+"No payment taken now" note below
+
+Submit → Supabase + emails → animated success screen
+
+═══════════════════════════════════════════════════════════
+DESIGN SYSTEM — ENFORCE CONSISTENTLY EVERYWHERE
+═══════════════════════════════════════════════════════════
+
+Every single component across the entire platform 
+must use these exact values. No exceptions.
+
+Fonts: Cormorant Garamond (headings/display) + Inter (body/UI)
+Gold: #C9A84C — CTAs, accents, active states only
+Black: #080709
+Near black: #0D0C0F  
+Surface: #131217
+Off white: #E8E2D8
+Grey: #8C8880
+Cream: #F5F0E6
+Success: #2A9E68
+Error: #C44444
+
+All buttons: sharp corners (no border-radius ever)
+All cards: sharp corners
+All modals: sharp corners, dark background, gold border
+All inputs: dark background, gold border on focus
+All icons: Lucide React SVG only, zero emoji
+
+Motion everywhere:
+Hover buttons: translateY(-2px) 150ms
+Hover cards: translateY(-4px) 200ms  
+Page transitions: opacity fade 200ms
+Scroll reveals: translateY(32px) to 0 + opacity, 600ms
+Modal open: scale(0.97) to 1 + opacity, 250ms
+
+═══════════════════════════════════════════════════════════
+ABSOLUTE REQUIREMENTS
+═══════════════════════════════════════════════════════════
+
+1. Fix login first — nothing else matters if hub is inaccessible
+2. Password reset must work end to end including the email link
+3. Every hub page must load without errors
+4. Design must be 100% consistent across every page and modal
+5. Zero emoji anywhere — Lucide SVG icons only
+6. Logo /public/atera-logo.png used everywhere as img tag
+7. "ATERA Stays" in all public UI, "ATERA INDUSTRIES LTD" 
+   in legal text and contracts only
+8. Platform must work perfectly on iPhone, iPad and desktop
+9. Hub content fills full available width — no max-width cap
+10. Every form: loading state, success state, error state
+11. The finished product must feel like Apple built it for 
+    the UK property market. Premium, precise, effortless.
+    If it does not feel that way, it is not finished.

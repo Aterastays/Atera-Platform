@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 interface HeroProps {
   onBookStay: () => void;
@@ -6,75 +6,95 @@ interface HeroProps {
 }
 
 export function Hero({ onBookStay, onLandlord }: HeroProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [vis, setVis] = useState(false);
 
   useEffect(() => {
-    const els = containerRef.current?.querySelectorAll("[data-hero]") ?? [];
-    els.forEach((el, i) => {
-      (el as HTMLElement).style.transitionDelay = `${i * 80}ms`;
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          (el as HTMLElement).classList.add("hero-in");
-        });
-      });
-    });
+    const t = setTimeout(() => setVis(true), 100);
+    return () => clearTimeout(t);
   }, []);
 
-  return (
-    <section className="relative h-screen min-h-[680px] bg-black overflow-hidden flex flex-col items-center justify-center">
-      <img
-        src="/hero-apartment.png"
-        alt="Luxury serviced apartment"
-        className="absolute inset-0 w-full h-full object-cover object-center"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/55 to-black/45 pointer-events-none" />
+  const anim = (delay: number): React.CSSProperties => ({
+    opacity: vis ? 1 : 0,
+    transform: vis ? "translateY(0)" : "translateY(24px)",
+    transition: `opacity 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 0.9s cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+  });
 
-      <div ref={containerRef} className="relative z-10 flex flex-col items-center text-center px-6 w-full max-w-4xl">
-        <p
-          data-hero
-          className="hero-item text-[11px] font-semibold tracking-[0.18em] uppercase text-[#a1a1a6] mb-5"
-        >
-          Atera Stays
-        </p>
-        <h1
-          data-hero
-          className="hero-item text-[56px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.0] text-white"
-        >
-          Premium Stays.
-        </h1>
-        <h1
-          data-hero
-          className="hero-item text-[56px] md:text-[76px] font-bold tracking-[-0.03em] leading-[1.0] text-white mb-7"
-        >
-          Proven Management.
-        </h1>
-        <p
-          data-hero
-          className="hero-item text-[16px] text-[#c7c7cc] max-w-md mx-auto font-normal leading-[1.7] mb-10"
-        >
-          Guaranteed rent for landlords.
-          <br />
-          Premium serviced accommodation for corporate guests.
-        </p>
-        <div data-hero className="hero-item flex flex-col sm:flex-row items-center gap-3">
-          <button
-            onClick={onLandlord}
-            className="bg-white text-black px-7 py-[12px] rounded-[980px] font-semibold text-[15px] hover:bg-[#e8e8ed] transition-colors duration-200 min-w-[188px]"
-            data-testid="btn-landlord"
-          >
-            Get a Free Valuation
-          </button>
-          <button
-            onClick={onBookStay}
-            className="bg-white/10 backdrop-blur-sm text-white border border-white/25 px-7 py-[12px] rounded-[980px] font-semibold text-[15px] hover:bg-white/20 transition-colors duration-200 min-w-[188px]"
-            data-testid="btn-book-stay"
-          >
+  return (
+    <section
+      style={{ minHeight: "100vh", background: "#080709", position: "relative", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", overflow: "hidden" }}
+    >
+      {/* Grain */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+        opacity: 0.04,
+      }} />
+
+      {/* Gold glow */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
+        background: "radial-gradient(ellipse 70% 55% at 50% 40%, rgba(201,168,76,0.08) 0%, transparent 70%)",
+      }} />
+
+      {/* Corner brackets */}
+      <div style={{ position: "absolute", top: 32, left: 32, zIndex: 1, width: 28, height: 28, borderTop: "1.5px solid #C9A84C", borderLeft: "1.5px solid #C9A84C" }} />
+      <div style={{ position: "absolute", top: 32, right: 32, zIndex: 1, width: 28, height: 28, borderTop: "1.5px solid #C9A84C", borderRight: "1.5px solid #C9A84C" }} />
+
+      {/* Content */}
+      <div style={{ position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "0 24px", maxWidth: 720 }}>
+
+        <div style={anim(0)}>
+          <img src="/atera-logo.png" alt="Atera Stays" style={{ height: 72, width: "auto", marginBottom: 36 }} />
+        </div>
+
+        <div style={anim(140)}>
+          <h1 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(48px, 8vw, 92px)", fontWeight: 400, letterSpacing: "0.28em", color: "#C9A84C", lineHeight: 1, margin: "0 0 24px" }}>
+            ATERA STAYS
+          </h1>
+        </div>
+
+        <div style={anim(260)}>
+          <div style={{ width: 60, height: 1, background: "#C9A84C", margin: "0 auto 28px" }} />
+        </div>
+
+        <div style={anim(380)}>
+          <p style={{ fontFamily: "var(--font-display)", fontSize: "clamp(26px, 4.5vw, 52px)", fontWeight: 300, color: "#E8E2D8", lineHeight: 1.08, margin: "0 0 24px" }}>
+            Premium Stays,{" "}
+            <em>Proven Management.</em>
+          </p>
+        </div>
+
+        <div style={anim(500)}>
+          <p style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 300, color: "#8C8880", lineHeight: 1.7, maxWidth: 500, margin: "0 auto 44px" }}>
+            Professionally managed short stays for guests. Guaranteed rent and full property management for landlords across England.
+          </p>
+        </div>
+
+        <div style={{ ...anim(620), display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+          <button onClick={onBookStay} className="btn-gold" style={{ height: 56, padding: "0 36px", fontSize: 15 }}>
             Book a Stay
+          </button>
+          <button onClick={onLandlord} className="btn-outline" style={{ height: 56, padding: "0 36px", fontSize: 15 }}>
+            I Have a Property
           </button>
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+      {/* Scroll indicator */}
+      <div style={{
+        position: "absolute", bottom: 40, left: "50%", transform: "translateX(-50%)", zIndex: 2,
+        opacity: vis ? 0.55 : 0, transition: "opacity 1s ease 1400ms",
+        display: "flex", flexDirection: "column", alignItems: "center",
+      }}>
+        <div style={{ width: 1, height: 44, background: "linear-gradient(to bottom, #C9A84C, transparent)", animation: "scrollPulse 2.2s ease-in-out infinite" }} />
+      </div>
+
+      <style>{`
+        @keyframes scrollPulse {
+          0%, 100% { opacity: 0.35; transform: scaleY(1) translateY(0); }
+          50% { opacity: 1; transform: scaleY(1.12) translateY(2px); }
+        }
+      `}</style>
     </section>
   );
 }
