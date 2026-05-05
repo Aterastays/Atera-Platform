@@ -7,6 +7,7 @@ import { Privacy } from "@/pages/Privacy";
 import { Terms } from "@/pages/Terms";
 import { NotFound } from "@/pages/NotFound";
 import { HubLogin } from "@/pages/hub/Login";
+import { HubResetPassword } from "@/pages/hub/ResetPassword";
 import { HubLayout } from "@/components/hub/HubLayout";
 import { HubDashboard } from "@/pages/hub/Dashboard";
 import { HubCommandCentre } from "@/pages/hub/CommandCentre";
@@ -32,6 +33,7 @@ function App() {
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />
             <Route path="/hub/login" component={HubLogin} />
+            <Route path="/hub/reset-password" component={HubResetPassword} />
             <Route path="/hub*">
               <HubLayout>
                 <Switch>
