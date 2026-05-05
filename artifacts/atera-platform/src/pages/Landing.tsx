@@ -3,23 +3,20 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { ServicesSection } from "@/components/landing/ServicesSection";
-import { StaysPartnership } from "@/components/landing/StaysPartnership";
-import { PropertyManagement } from "@/components/landing/PropertyManagement";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { PropertiesSection } from "@/components/landing/PropertiesSection";
 import { CTAStrip } from "@/components/landing/CTAStrip";
 import { Footer } from "@/components/landing/Footer";
 import { GuestEnquiryModal } from "@/components/modals/GuestEnquiryModal";
 import { LandlordEnquiryModal } from "@/components/modals/LandlordEnquiryModal";
 
 export function Landing() {
-  const [guestOpen, setGuestOpen] = useState(false);
-  const [landlordOpen, setLandlordOpen] = useState(false);
-  const [landlordService, setLandlordService] = useState<"stays" | "management" | null>(null);
+  const [guestModalOpen, setGuestModalOpen] = useState(false);
+  const [landlordModalOpen, setLandlordModalOpen] = useState(false);
+  const [landlordInitialService, setLandlordInitialService] = useState<"stays" | "management" | null>(null);
 
-  const openLandlord = (service?: "stays" | "management") => {
-    setLandlordService(service ?? null);
-    setLandlordOpen(true);
+  const handleLandlordClick = (service?: "stays" | "management") => {
+    setLandlordInitialService(service || null);
+    setLandlordModalOpen(true);
   };
 
   useEffect(() => {
@@ -38,43 +35,41 @@ export function Landing() {
     return () => io.disconnect();
   }, []);
 
-  const guest = () => setGuestOpen(true);
-  const landlord = () => openLandlord();
-
   return (
-    <div style={{ minHeight: "100vh", background: "#080709", overflowX: "hidden" }}>
-      <Navbar onBookStay={guest} onLandlord={landlord} />
+    <div className="min-h-screen bg-black font-['Inter',sans-serif] selection:bg-white selection:text-black overflow-x-hidden">
+      <Navbar
+        onBookStay={() => setGuestModalOpen(true)}
+        onLandlord={() => handleLandlordClick()}
+      />
 
       <main>
-        {/* 1. Hero */}
-        <Hero onBookStay={guest} onLandlord={landlord} />
-
-        {/* 2. Trust Bar */}
+        <Hero
+          onBookStay={() => setGuestModalOpen(true)}
+          onLandlord={() => handleLandlordClick()}
+        />
         <TrustBar />
-
-        {/* 3. Who are you / dual audience */}
-        <ServicesSection onLandlord={() => openLandlord("stays")} onBookStay={guest} />
-
-        {/* 4. Stays Partnership (4 subsections: dark/cream/dark/cream) */}
-        <StaysPartnership onLandlord={() => openLandlord("stays")} />
-
-        {/* 5. Property Management (3 subsections: dark/cream/dark) */}
-        <PropertyManagement />
-
-        {/* 6. How it works (2-column: guests + landlords) */}
+        <ServicesSection
+          onLandlord={() => handleLandlordClick("stays")}
+          onBookStay={() => setGuestModalOpen(true)}
+        />
         <HowItWorks />
-
-        {/* 7. Properties grid */}
-        <PropertiesSection onBookStay={guest} />
-
-        {/* 8. Final CTA (gold section) */}
-        <CTAStrip onBookStay={guest} onLandlord={landlord} />
+        <CTAStrip
+          onBookStay={() => setGuestModalOpen(true)}
+          onLandlord={() => handleLandlordClick()}
+        />
       </main>
 
       <Footer />
 
-      <GuestEnquiryModal open={guestOpen} onClose={() => setGuestOpen(false)} />
-      <LandlordEnquiryModal open={landlordOpen} onClose={() => setLandlordOpen(false)} initialService={landlordService} />
+      <GuestEnquiryModal
+        open={guestModalOpen}
+        onClose={() => setGuestModalOpen(false)}
+      />
+      <LandlordEnquiryModal
+        open={landlordModalOpen}
+        onClose={() => setLandlordModalOpen(false)}
+        initialService={landlordInitialService}
+      />
     </div>
   );
 }

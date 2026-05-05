@@ -1,5 +1,3 @@
-import { Check } from "lucide-react";
-
 interface ServicesProps {
   onLandlord: () => void;
   onBookStay: () => void;
@@ -7,91 +5,70 @@ interface ServicesProps {
 
 export function ServicesSection({ onLandlord, onBookStay }: ServicesProps) {
   return (
-    <section id="dual-audience" style={{ background: "#080709", padding: "140px 0", minHeight: "90vh", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 32px" }}>
-
-        {/* Headline */}
-        <div className="reveal text-center" style={{ marginBottom: 72 }}>
-          <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(40px, 6vw, 64px)", fontWeight: 400, color: "#E8E2D8", margin: "0 0 16px", lineHeight: 1.05 }}>
-            Who Are You?
-          </h2>
-          <p style={{ fontFamily: "var(--font-body)", fontSize: 17, fontWeight: 300, color: "#8C8880" }}>
-            Two services. One standard of excellence.
-          </p>
-        </div>
-
-        {/* Two cards */}
-        <div className="grid md:grid-cols-2 gap-6">
-
-          {/* Guest card */}
-          <div className="reveal" style={{ transitionDelay: "0ms" }}>
-            <div style={{
-              background: "#0D0C0F",
-              border: "1px solid rgba(201,168,76,0.15)",
-              padding: "48px 40px",
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-              transition: "transform 200ms ease, border-color 200ms",
-              cursor: "pointer",
-            }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(201,168,76,0.35)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ""; (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(201,168,76,0.15)"; }}
+    <>
+      {/* ── Landlord ─── */}
+      <section id="landlords" className="bg-[#f5f5f7] text-black py-32 overflow-hidden">
+        <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row items-center gap-20">
+          <div className="reveal w-full md:w-[42%] flex flex-col items-start">
+            <span className="text-[11px] font-bold tracking-[0.14em] text-[#6e6e73] uppercase mb-5 px-3 py-1 border border-[#c7c7cc] rounded-[980px]">
+              For Landlords
+            </span>
+            <h2 className="text-[44px] font-bold tracking-[-0.03em] leading-[1.08] mb-6">
+              Total peace of mind.<br />Zero void periods.
+            </h2>
+            <p className="text-[17px] text-[#6e6e73] leading-[1.65] mb-8">
+              We become your company tenant, guaranteeing your rent for 3 to 5 years. No management fees, no void periods — your property maintained to show-home standard.
+            </p>
+            <button
+              onClick={onLandlord}
+              className="text-[17px] text-[#0066cc] font-semibold flex items-center gap-1 group hover:gap-2 transition-all duration-200"
+              data-testid="btn-service-stays"
             >
-              <div style={{ width: 40, height: 1, background: "#C9A84C", marginBottom: 28 }} />
-              <div className="label-style" style={{ color: "#C9A84C", marginBottom: 16 }}>For Guests</div>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 400, color: "#E8E2D8", margin: "0 0 20px", lineHeight: 1.1 }}>
-                Find Your Perfect Stay
-              </h3>
-              <p style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 300, color: "#8C8880", lineHeight: 1.75, marginBottom: 36, flex: 1 }}>
-                Professional, fully managed properties for corporate travellers, contractors, and professionals. Designed for extended stays with everything you need from day one.
-              </p>
-              <button onClick={onBookStay} className="btn-outline" style={{ alignSelf: "flex-start" }}>
-                Browse Properties
-              </button>
-            </div>
+              Get a free valuation
+              <span className="group-hover:translate-x-1 transition-transform duration-200 inline-block">→</span>
+            </button>
           </div>
-
-          {/* Landlord card */}
-          <div className="reveal" style={{ transitionDelay: "150ms" }}>
-            <div style={{
-              background: "#0D0C0F",
-              border: "1px solid rgba(201,168,76,0.15)",
-              padding: "48px 40px",
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-              transition: "transform 200ms ease, border-color 200ms",
-              cursor: "pointer",
-            }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(201,168,76,0.35)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ""; (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(201,168,76,0.15)"; }}
-            >
-              <div style={{ width: 40, height: 1, background: "#C9A84C", marginBottom: 28 }} />
-              <div className="label-style" style={{ color: "#C9A84C", marginBottom: 16 }}>For Landlords</div>
-              <h3 style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 400, color: "#E8E2D8", margin: "0 0 20px", lineHeight: 1.1 }}>
-                Make Your Property Work
-              </h3>
-              <p style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 300, color: "#8C8880", lineHeight: 1.75, marginBottom: 36, flex: 1 }}>
-                Two options. Both hands-off. Both guaranteed. Let us take your property on a company let with guaranteed monthly rent, or let us manage it fully on your behalf.
-              </p>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 32 }}>
-                {["Fixed income every month", "We manage everything", "Corporate guests only"].map(b => (
-                  <div key={b} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <Check size={14} color="#C9A84C" />
-                    <span style={{ fontFamily: "var(--font-body)", fontSize: 14, fontWeight: 300, color: "#8C8880" }}>{b}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button onClick={onLandlord} className="btn-gold" style={{ alignSelf: "flex-start" }}>
-                I Have a Property
-              </button>
-            </div>
+          <div className="reveal w-full md:w-[58%]" style={{ transitionDelay: "0.2s" }}>
+            <img
+              src="/landlord-exterior.png"
+              alt="Premium UK property"
+              className="w-full rounded-[20px]"
+            />
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* ── Guests ─── */}
+      <section id="guests" className="bg-black text-white py-32 overflow-hidden border-t border-[#1d1d1f]">
+        <div className="max-w-[1100px] mx-auto px-6 flex flex-col md:flex-row-reverse items-center gap-20">
+          <div className="reveal w-full md:w-[42%] flex flex-col items-start">
+            <span className="text-[11px] font-bold tracking-[0.14em] text-[#6e6e73] uppercase mb-5 px-3 py-1 border border-[#3a3a3c] rounded-[980px]">
+              For Corporate Guests
+            </span>
+            <h2 className="text-[44px] font-bold tracking-[-0.03em] leading-[1.08] mb-6">
+              A premium space to work, rest, and live.
+            </h2>
+            <p className="text-[17px] text-[#a1a1a6] leading-[1.65] mb-8">
+              Spacious, fully equipped serviced apartments designed for professionals. Fast Wi-Fi, dedicated workspaces, and 24/7 support — everything you need for a perfect stay.
+            </p>
+            <button
+              onClick={onBookStay}
+              className="text-[17px] text-[#2997ff] font-semibold flex items-center gap-1 group hover:gap-2 transition-all duration-200"
+              data-testid="btn-service-management"
+            >
+              Explore our locations
+              <span className="group-hover:translate-x-1 transition-transform duration-200 inline-block">→</span>
+            </button>
+          </div>
+          <div className="reveal w-full md:w-[58%]" style={{ transitionDelay: "0.2s" }}>
+            <img
+              src="/guest-office.png"
+              alt="Premium home office in serviced apartment"
+              className="w-full rounded-[20px]"
+            />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

@@ -5,33 +5,21 @@ interface CTAStripProps {
 
 export function CTAStrip({ onBookStay, onLandlord }: CTAStripProps) {
   return (
-    <section style={{ background: "#C9A84C", padding: "120px 0", minHeight: "60vh", display: "flex", alignItems: "center" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto", padding: "0 32px", textAlign: "center" }}>
-        <h2 className="reveal" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(40px, 6vw, 80px)", fontWeight: 400, color: "#080709", lineHeight: 1.05, margin: "0 0 48px" }}>
-          Ready to begin?
+    <section className="bg-black text-white py-32 border-t border-[#1d1d1f]">
+      <div className="max-w-[720px] mx-auto px-6 text-center">
+        <h2 className="reveal text-[52px] font-bold tracking-[-0.03em] leading-[1.08] mb-10">
+          Ready to upgrade your property experience?
         </h2>
-        <div className="reveal" style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", transitionDelay: "150ms" }}>
-          <button onClick={onLandlord} style={{
-            background: "#080709", color: "#E8E2D8",
-            border: "none", padding: "16px 40px",
-            fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 500,
-            cursor: "pointer",
-            transition: "transform 150ms, background 150ms",
-          }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLButtonElement).style.background = "#0D0C0F"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ""; (e.currentTarget as HTMLButtonElement).style.background = "#080709"; }}
+        <div className="reveal flex flex-col sm:flex-row items-center justify-center gap-3" style={{ transitionDelay: "0.15s" }}>
+          <button
+            onClick={onLandlord}
+            className="bg-white text-black px-8 py-3.5 rounded-[980px] font-semibold text-[15px] hover:bg-[#e8e8ed] transition-colors duration-200 min-w-[190px]"
           >
-            I Have a Property
+            Get a Free Valuation
           </button>
-          <button onClick={onBookStay} style={{
-            background: "transparent", color: "#080709",
-            border: "2px solid #080709", padding: "16px 40px",
-            fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 500,
-            cursor: "pointer",
-            transition: "transform 150ms, background 150ms",
-          }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLButtonElement).style.background = "rgba(8,7,9,0.08)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ""; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+          <button
+            onClick={onBookStay}
+            className="bg-[#1d1d1f] text-white px-8 py-3.5 rounded-[980px] font-semibold text-[15px] hover:bg-[#2c2c2e] transition-colors duration-200 min-w-[190px]"
           >
             Book a Stay
           </button>
