@@ -3,7 +3,11 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { ServicesSection } from "@/components/landing/ServicesSection";
+import { PermissionsSection } from "@/components/landing/PermissionsSection";
+import { BenefitsSection } from "@/components/landing/BenefitsSection";
+import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { StandardSection } from "@/components/landing/StandardSection";
 import { CTAStrip } from "@/components/landing/CTAStrip";
 import { Footer } from "@/components/landing/Footer";
 import { GuestEnquiryModal } from "@/components/modals/GuestEnquiryModal";
@@ -52,7 +56,11 @@ export function Landing() {
           onLandlord={() => handleLandlordClick("stays")}
           onBookStay={() => setGuestModalOpen(true)}
         />
+        <PermissionsSection />
+        <BenefitsSection />
+        <TestimonialsSection />
         <HowItWorks />
+        <StandardSection />
         <CTAStrip
           onBookStay={() => setGuestModalOpen(true)}
           onLandlord={() => handleLandlordClick()}

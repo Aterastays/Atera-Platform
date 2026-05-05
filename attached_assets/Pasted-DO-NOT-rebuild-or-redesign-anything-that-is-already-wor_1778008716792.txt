@@ -1,0 +1,149 @@
+DO NOT rebuild or redesign anything that is already working. 
+DO NOT change the current visual design, colour scheme, 
+layout or component style. Keep everything that exists.
+
+Only make the following specific targeted fixes and additions:
+
+═══════════════════════════════════════════════════════════
+FIX 1 — AUTHENTICATION (CRITICAL — DO THIS FIRST)
+═══════════════════════════════════════════════════════════
+
+The hub login does not work. Fix only the auth logic:
+
+- signInWithPassword must complete and redirect to dashboard
+- Add "Forgot password?" link below the sign in button
+- Password reset: call supabase.auth.resetPasswordForEmail() 
+  with redirectTo: window.location.origin + '/hub/reset-password'
+- Build /hub/reset-password page — accepts token from email 
+  link, shows new password + confirm fields, calls 
+  supabase.auth.updateUser({password: newPassword})
+- onAuthStateChange listener to persist session on refresh
+- Auto logout after 30 minutes inactivity
+- Do NOT touch any visual design on the login page
+
+═══════════════════════════════════════════════════════════
+FIX 2 — HUB PAGES CRASHING
+═══════════════════════════════════════════════════════════
+
+Every hub page crashes on navigation. Fix the errors only:
+
+- Wrap every hub page in a React Error Boundary
+- Handle null/undefined data from Supabase — never crash
+- Show skeleton loading states while data loads
+- Show inline error message if Supabase fails
+- Do NOT change any visual design of the pages
+
+═══════════════════════════════════════════════════════════
+FIX 3 — MODAL FORMS DESIGN INCONSISTENCY
+═══════════════════════════════════════════════════════════
+
+The landlord and guest enquiry modals on the public site 
+do not match the current site design. Update ONLY the 
+styling of these modals to match what already exists:
+
+- Same dark background as the rest of the site
+- Same input field style as used elsewhere on the site
+- Same button style as used elsewhere on the site
+- Same typography as the rest of the site
+- Keep all existing form fields and validation exactly as is
+- Do NOT change the form structure or fields
+
+═══════════════════════════════════════════════════════════
+ADD 1 — LANDLORD MODAL INFO SLIDES
+═══════════════════════════════════════════════════════════
+
+After the user selects Stays Partnership or Property 
+Management, and BEFORE showing the enquiry form, add 
+a 3-slide animated sequence that auto-advances.
+
+Use the EXACT same design style as the rest of the site.
+
+FOR STAYS PARTNERSHIP SLIDES:
+Slide 1: "We pay you. Every month."
+Slide 2: "No voids. No tenants. No stress."  
+Slide 3: "Ready to find out what your property is worth?"
+  Button: "Yes, let's talk" — proceeds to the form
+
+FOR MANAGEMENT SLIDES:
+Slide 1: "We handle everything."
+Slide 2: "You just receive your monthly statement."
+Slide 3: "Let us show you what we can do."
+  Button: "Tell me more" — proceeds to the form
+
+Each slide:
+- Fades in over 400ms
+- Holds for 2.5 seconds
+- Fades out 400ms before next slide appears
+- Small dot indicators at bottom showing progress
+- "Skip" text link in top right corner of modal
+- All text in existing site typography and colours
+
+═══════════════════════════════════════════════════════════
+ADD 2 — GUEST BOOKING PROPERTY SELECTOR
+═══════════════════════════════════════════════════════════
+
+In the guest booking modal, replace the property dropdown 
+with visual property cards. Keep everything else the same.
+
+- Fetch live properties from Supabase on modal open
+- Show each as a small card: photo + name + postcode + rate
+- Tapping a card selects it (gold border appears on selected)
+- Add "I'm flexible — any property" as a final option
+- Selected property passes through to the form submission
+- If no live properties, show "Properties coming soon" 
+  message and skip this step
+- Use existing card design style from the rest of the site
+
+═══════════════════════════════════════════════════════════
+ADD 3 — MORE CONTENT ON LANDING PAGE
+═══════════════════════════════════════════════════════════
+
+Add more information to the existing landing page sections 
+WITHOUT changing the current design or layout style.
+
+Add these additions inside the existing design:
+
+UNDER the services section, add a new dark subsection:
+Headline: "The permissions. Done properly."
+Body: "Every property goes through a full compliance check 
+before we proceed. Freeholder, mortgage lender, insurer — 
+all confirmed in writing. We never cut corners and we 
+never proceed without full approval from every relevant party."
+Animate in on scroll using existing animation style.
+
+UNDER the management section, add:
+Headline: "What does that mean for you?"
+Four benefit rows, animated in with stagger:
+Each: gold dash + benefit title + one line explanation
+— Fixed income you can plan around
+— Zero management responsibilities  
+— Corporate guests only — no ASTs
+— 3 to 5 year agreements with a break clause
+
+ADD a second testimonial to the existing testimonials section:
+"They explained everything clearly. Complete peace of mind."
+— Patricia L., Landlord, Leeds
+
+ADD a section between How It Works and Properties:
+Headline: "One standard. Two services."
+Subtext: "Whether you want guaranteed rent or full 
+management — the level of professionalism never changes."
+Two stat highlights side by side:
+"100%" — Every property fully compliance checked
+"48hrs" — Average response time to new enquiries
+Animate in on scroll.
+
+═══════════════════════════════════════════════════════════
+ABSOLUTE RULES FOR THIS TASK
+═══════════════════════════════════════════════════════════
+
+1. Do NOT change any colours
+2. Do NOT change any fonts
+3. Do NOT change any existing layouts
+4. Do NOT rebuild any page from scratch
+5. Do NOT remove any existing features
+6. Only fix the bugs listed and add the additions listed
+7. Match the existing design exactly when adding anything new
+8. Test that hub login works before finishing
+9. Test that all hub pages load without errors
+10. Confirm each fix is complete before moving to the next

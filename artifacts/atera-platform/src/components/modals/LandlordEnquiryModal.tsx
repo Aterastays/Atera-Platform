@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, ArrowLeft, Home, FileText } from "lucide-react";
 
 interface Props {
@@ -7,16 +7,16 @@ interface Props {
   initialService?: "stays" | "management" | null;
 }
 
-const SLIDES: Record<"stays" | "management", { eyebrow: string; headline: string; body: string }[]> = {
+const SLIDES: Record<"stays" | "management", { eyebrow: string; headline: string; body: string; cta?: string }[]> = {
   stays: [
-    { eyebrow: "STAYS PARTNERSHIP", headline: "Guaranteed rent. Every month.", body: "We pay you directly, on the same date every month. Whether the property is occupied or not." },
-    { eyebrow: "STAYS PARTNERSHIP", headline: "Zero voids. Zero headaches.", body: "No tenant hunting. No management stress. We become your company tenant and handle everything." },
-    { eyebrow: "STAYS PARTNERSHIP", headline: "Let's find out what your property is worth.", body: "A quick call and a free valuation. No obligation. Just the numbers." },
+    { eyebrow: "STAYS PARTNERSHIP", headline: "We pay you. Every month.", body: "We become your company tenant and pay a fixed rent directly to you — on the same date every month, occupied or not." },
+    { eyebrow: "STAYS PARTNERSHIP", headline: "No voids. No tenants. No stress.", body: "No chasing payments. No dealing with guests. No management headaches. We handle everything from day one." },
+    { eyebrow: "STAYS PARTNERSHIP", headline: "Ready to find out what your property is worth?", body: "A free valuation takes 20 minutes. No obligation. Just clear numbers so you can decide.", cta: "Yes, let's talk" },
   ],
   management: [
-    { eyebrow: "PROPERTY MANAGEMENT", headline: "We handle everything.", body: "From finding the right tenants to fixing boilers at midnight. You do nothing." },
-    { eyebrow: "PROPERTY MANAGEMENT", headline: "One monthly statement.", body: "Clear, transparent, always on time. You see every penny in and out." },
-    { eyebrow: "PROPERTY MANAGEMENT", headline: "Let's talk about your property.", body: "Tell us where it is and what you need. We'll come back with a clear proposal." },
+    { eyebrow: "PROPERTY MANAGEMENT", headline: "We handle everything.", body: "From finding the right tenants to compliance checks and maintenance calls — you don't lift a finger." },
+    { eyebrow: "PROPERTY MANAGEMENT", headline: "You just receive your monthly statement.", body: "Clear, itemised, always on time. Every penny accounted for so you always know exactly where you stand." },
+    { eyebrow: "PROPERTY MANAGEMENT", headline: "Let us show you what we can do.", body: "Tell us about your property. We'll come back with a clear proposal and no-pressure next steps.", cta: "Tell me more" },
   ],
 };
 
@@ -69,9 +69,7 @@ const LBL: React.CSSProperties = {
   marginBottom: 7,
 };
 
-function Field({
-  label, children,
-}: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
       <label style={LBL}>{label}</label>
@@ -120,12 +118,13 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [service, setService] = useState<"stays" | "management" | null>(initialService);
   const [slide, setSlide] = useState(0);
-  const [slideDir, setSlideDir] = useState(1);
+  const [slideVisible, setSlideVisible] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [animOpen, setAnimOpen] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [form, setForm] = useState({
     name: "", email: "", phone: "", address: "", bedrooms: "",
@@ -133,10 +132,47 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
     currentSituation: "", goals: "",
   });
 
+  const clearTimers = () => {
+    if (autoTimer.current) clearTimeout(autoTimer.current);
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+  };
+
+  const goToSlide = useCallback((i: number) => {
+    clearTimers();
+    setSlideVisible(false);
+    fadeTimer.current = setTimeout(() => {
+      setSlide(i);
+      setSlideVisible(true);
+    }, 400);
+  }, []);
+
+  const advanceSlide = useCallback((current: number, total: number) => {
+    if (current >= total - 1) {
+      // Last slide — fade out then go to form
+      setSlideVisible(false);
+      fadeTimer.current = setTimeout(() => setStep(3), 400);
+    } else {
+      goToSlide(current + 1);
+    }
+  }, [goToSlide]);
+
+  // Auto-advance: 400ms fade in + 2500ms hold = 2900ms before starting fade out
+  useEffect(() => {
+    if (step !== 2 || !service) return;
+    const slides = SLIDES[service];
+    setSlideVisible(true);
+    autoTimer.current = setTimeout(() => {
+      advanceSlide(slide, slides.length);
+    }, 2900);
+    return () => clearTimers();
+  }, [step, service, slide, advanceSlide]);
+
   const resetState = () => {
+    clearTimers();
     setSuccess(false);
     setError(null);
     setSlide(0);
+    setSlideVisible(true);
     setForm({ name: "", email: "", phone: "", address: "", bedrooms: "", currentRent: "", tenanted: "No", availableFrom: "", notes: "", currentSituation: "", goals: "" });
     if (initialService) { setService(initialService); setStep(2); }
     else { setService(null); setStep(1); }
@@ -159,26 +195,6 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
-
-  // Auto-advance slides
-  useEffect(() => {
-    if (step !== 2 || !service) return;
-    const slides = SLIDES[service];
-    timerRef.current = setInterval(() => {
-      setSlide(prev => {
-        if (prev >= slides.length - 1) { clearInterval(timerRef.current!); setStep(3); return prev; }
-        setSlideDir(1);
-        return prev + 1;
-      });
-    }, 3500);
-    return () => clearInterval(timerRef.current!);
-  }, [step, service]);
-
-  const goToSlide = (i: number) => {
-    setSlideDir(i > slide ? 1 : -1);
-    setSlide(i);
-    if (timerRef.current) clearInterval(timerRef.current);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -253,6 +269,18 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
           <X size={18} />
         </button>
 
+        {/* Skip — shown only during slides */}
+        {!success && step === 2 && (
+          <button
+            onClick={() => { clearTimers(); setStep(3); }}
+            style={{ position: "absolute", top: 22, right: 52, background: "none", border: "none", fontFamily: "var(--font-body)", fontSize: 12, color: "#5C5854", cursor: "pointer", padding: "2px 6px", zIndex: 10 }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#8C8880")}
+            onMouseLeave={e => (e.currentTarget.style.color = "#5C5854")}
+          >
+            Skip
+          </button>
+        )}
+
         <div style={{ padding: "48px 44px" }}>
 
           {/* SUCCESS */}
@@ -284,7 +312,7 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
                   { key: "stays" as const, Icon: Home, title: "Stays Partnership", desc: "Guaranteed monthly rent, paid directly to you. We become your tenant and manage everything." },
                   { key: "management" as const, Icon: FileText, title: "Property Management", desc: "Traditional letting management at a fixed monthly fee. Full compliance, inspections, and rent collection." },
                 ] as const).map(({ key, Icon, title, desc }) => (
-                  <button key={key} onClick={() => { setService(key); setStep(2); setSlide(0); }}
+                  <button key={key} onClick={() => { setService(key); setSlide(0); setSlideVisible(true); setStep(2); }}
                     style={{
                       background: "rgba(255,255,255,0.03)", border: "1px solid rgba(201,168,76,0.1)",
                       padding: "24px 24px", textAlign: "left", cursor: "pointer",
@@ -311,7 +339,7 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
           {!success && step === 2 && service && currentSlide && (
             <div>
               {!initialService && (
-                <button onClick={() => setStep(1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", color: "#8C8880", cursor: "pointer", marginBottom: 32, padding: 0, fontFamily: "var(--font-body)", fontSize: 13 }}
+                <button onClick={() => { clearTimers(); setStep(1); }} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", color: "#8C8880", cursor: "pointer", marginBottom: 32, padding: 0, fontFamily: "var(--font-body)", fontSize: 13 }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#E8E2D8")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#8C8880")}
                 >
@@ -319,7 +347,12 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
                 </button>
               )}
 
-              <div style={{ minHeight: 220, marginBottom: 44 }}>
+              {/* Slide content with fade */}
+              <div style={{
+                minHeight: 220, marginBottom: 44,
+                opacity: slideVisible ? 1 : 0,
+                transition: "opacity 400ms ease",
+              }}>
                 <div className="label-style" style={{ color: "#C9A84C", marginBottom: 24 }}>{currentSlide.eyebrow}</div>
                 <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 400, color: "#E8E2D8", margin: "0 0 20px", lineHeight: 1.1 }}>
                   {currentSlide.headline}
@@ -342,8 +375,8 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
               </div>
 
               <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <button onClick={() => { clearInterval(timerRef.current!); setStep(3); }} className="btn-gold" style={{ padding: "13px 28px", fontSize: 14 }}>
-                  Continue to Enquiry
+                <button onClick={() => { clearTimers(); setStep(3); }} className="btn-gold" style={{ padding: "13px 28px", fontSize: 14 }}>
+                  {currentSlide.cta || "Continue to Enquiry"}
                 </button>
                 {slide < slides.length - 1 && (
                   <button onClick={() => goToSlide(slide + 1)} style={{ background: "none", border: "none", fontFamily: "var(--font-body)", fontSize: 13, color: "#8C8880", cursor: "pointer", padding: "13px 0" }}
@@ -361,7 +394,7 @@ export function LandlordEnquiryModal({ open, onClose, initialService = null }: P
           {!success && step === 3 && (
             <form onSubmit={handleSubmit}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
-                <button type="button" onClick={() => setStep(2)} style={{ background: "none", border: "none", color: "#8C8880", cursor: "pointer", padding: 4 }}
+                <button type="button" onClick={() => { setSlide(0); setSlideVisible(true); setStep(2); }} style={{ background: "none", border: "none", color: "#8C8880", cursor: "pointer", padding: 4 }}
                   onMouseEnter={e => (e.currentTarget.style.color = "#E8E2D8")}
                   onMouseLeave={e => (e.currentTarget.style.color = "#8C8880")}
                 >
