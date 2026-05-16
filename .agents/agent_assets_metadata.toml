@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "aXcPX4XkMD_mceFiOHrW7"
@@ -18,3 +17,9 @@ id = "WSIaeP8TT7V4ucZAkrt2T"
 uri = "file://artifacts/mockup-sandbox/public/images/guest-office.png"
 type = "image"
 title = "Serviced apartment home office"
+
+[[outputs]]
+id = "-mj-XhlvTXcgovtZwhtYS"
+uri = "file://atera-stays.tar.gz"
+type = "unspecified"
+title = "atera-stays.tar.gz — Full project archive"
