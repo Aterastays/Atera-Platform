@@ -87,15 +87,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(async (email: string, password: string) => {
     const timeoutResult = { data: { user: null, session: null }, error: new Error("Request timed out — check your connection and try again.") };
+    console.debug("[auth] signIn: calling signInWithPassword…");
     const { data, error } = await withTimeout(
       supabase.auth.signInWithPassword({ email, password }),
       12000,
       timeoutResult as typeof timeoutResult
     );
+    console.debug("[auth] signInWithPassword result:", { user: data?.user?.id ?? null, error: error?.message ?? null });
     if (error) return { error: error.message };
 
     if (data.user) {
+      console.debug("[auth] fetching hub admin status for", data.user.id);
       const admin = await fetchIsHubAdmin(data.user.id);
+      console.debug("[auth] isAdmin:", admin);
       if (!admin) {
         await supabase.auth.signOut();
         return { error: "Access not permitted. Contact your administrator." };
