@@ -13,14 +13,21 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ]);
+}
+
 async function fetchIsHubAdmin(uid: string): Promise<boolean> {
   try {
-    const { data } = await supabase
-      .from("hub_admins")
-      .select("user_id")
-      .eq("user_id", uid)
-      .maybeSingle();
-    return data !== null;
+    const result = await withTimeout(
+      supabase.from("hub_admins").select("user_id").eq("user_id", uid).maybeSingle(),
+      8000,
+      { data: null, error: new Error("timeout") }
+    );
+    return result.data !== null && !result.error;
   } catch {
     return false;
   }
@@ -79,7 +86,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const timeoutResult = { data: { user: null, session: null }, error: new Error("Request timed out — check your connection and try again.") };
+    const { data, error } = await withTimeout(
+      supabase.auth.signInWithPassword({ email, password }),
+      12000,
+      timeoutResult as typeof timeoutResult
+    );
     if (error) return { error: error.message };
 
     if (data.user) {
